@@ -7,6 +7,10 @@
 
 - [x] **Admin-editable intake info on the home page:** for each of the two tracks, an admin can update the **opening (start) date** and the **number of seats allocated**. The home page shows these values.
 - [x] **Admin-editable workshop handlers:** through the admin panel, an admin can update the handler (trainer) names for each track. Handlers are shown per track on the home page. Initial values: Dr. Arjun U and Prajwal A (both tracks).
+- [x] **Platform has four areas:** (1) home page, (2) admin panel, (3) job listing page, (4) enrollee profile page.
+- [x] **Application form on the home page** appears only while an admin has applications **open** for that track. Admin can open and close applications per track.
+- [x] **Admins review applications and finalize** the accepted applicants. **Only finalized applicants** get access to their enrollee profile.
+- [x] Terminology: "chariot" is taken to mean the workshop/program (a track).
 
 ## Open decisions
 - [ ] First release scope: public site and enquiries only, or include the student portal?
@@ -46,3 +50,11 @@
 
 ## Phase 4: Extras
 - [ ] Certificates, student portfolios, mock-interview scheduling, payments if needed
+
+## Application and enrollment flow
+- [ ] Admin toggle: applications open/closed per track
+- [ ] Application form (shown on home page only when open)
+- [ ] Admin review list: view, shortlist, finalize or reject applicants
+- [ ] Finalized applicants receive login access
+- [ ] Enrollee profile page (design in progress)
+- [ ] Job listing page (admin posts jobs; shown to visitors and/or enrollees; to be defined)
