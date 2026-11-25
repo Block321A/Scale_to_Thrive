@@ -6,6 +6,7 @@
 - [x] Stack: Next.js + TypeScript + Tailwind (scaffold in `web/`). Database to be decided.
 
 - [x] **Admin-editable intake info on the home page:** for each of the two tracks, an admin can update the **opening (start) date** and the **number of seats allocated**. The home page shows these values.
+- [x] **Admin-editable workshop handlers:** through the admin panel, an admin can update the handler (trainer) names for each track. Handlers are shown per track on the home page. Initial values: Dr. Arjun U and Prajwal A (both tracks).
 
 ## Open decisions
 - [ ] First release scope: public site and enquiries only, or include the student portal?
@@ -18,6 +19,9 @@
 - [ ] Database table for per-track intake: start date, total seats, seats filled
 - [ ] Admin login (protected `/admin` area, one or a few admin accounts)
 - [ ] Admin form to edit opening date and seats for IT and Non-IT
+- [ ] Database table for handlers: name, designation, affiliation, linked to a track (a person can be on both tracks)
+- [ ] Admin form to add, edit, reorder and remove handlers per track
+- [ ] Home page shows each track's current handlers
 - [ ] Home page reads these values live; show "seats left" and a "Full" state when it reaches zero
 - [ ] Decide how "seats filled" is counted: manual number set by admin, or counted from enrollments
 - [ ] Hero: name, tagline, the two tracks, key facts (12 weeks, hybrid)
