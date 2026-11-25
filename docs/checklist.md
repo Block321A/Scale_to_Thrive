@@ -86,7 +86,7 @@
 
 ## First admin account
 - [x] The first admin (`scaletothrive@gmail.com`) is created from environment variables (`ADMIN_EMAIL`, `ADMIN_PASSWORD`) when the database is seeded. The password is **hashed**, never stored in plain text and **never committed** to the repo.
-- [ ] Force a password change on first login (the initial password is weak)
+- [x] The first admin is created in Supabase with a strong password (see `docs/deployment-guide.md`); the planning password is not used.
 
 ## Companies and jobs (decided)
 - [x] **New role: Company.** Admin creates each company with **logo, email and description**. The company gets an email with a **set-password link** (no password is chosen or shared by admin). Login uses the company email.
@@ -105,3 +105,10 @@
 - [x] Enrollee profile page (UI only, sample data): LinkedIn-style round photo, milestones, applied jobs
 - [ ] Backend not built yet: database, admin login, set-password emails, storing applications, job listings, company area. Track dates, seats and open/closed flags are placeholders in `web/src/lib/content.ts`.
 - [ ] Replace stock portraits with real photos; trainers currently show initials
+
+## Database and hosting
+- [x] `supabase/schema.sql`: tables, row level security, storage buckets, seed data. Tested against a local Postgres (15 scenarios).
+- [x] `docs/deployment-guide.md`: Supabase + Vercel steps.
+- [ ] Create the Supabase project and run the schema (user)
+- [ ] Wire the app to Supabase: admin login, track settings, applications, finalize + invite email, enrollee profile, companies and jobs
+- [ ] Configure SMTP email provider
