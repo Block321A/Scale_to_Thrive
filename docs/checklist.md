@@ -83,3 +83,7 @@
 ## Initial admin account (decided)
 - [x] A first admin account is created when the database is set up. Its email and password are supplied through **environment variables** (`ADMIN_EMAIL`, `ADMIN_PASSWORD`) in a local, git-ignored `.env` file and on the hosting provider. They are **never committed** to the repo, and the password is stored **hashed** in the database.
 - [ ] Admin should change the initial password after first login
+
+## First admin account
+- [x] The first admin (`scaletothrive@gmail.com`) is created from environment variables (`ADMIN_EMAIL`, `ADMIN_PASSWORD`) when the database is seeded. The password is **hashed**, never stored in plain text and **never committed** to the repo.
+- [ ] Force a password change on first login (the initial password is weak)
