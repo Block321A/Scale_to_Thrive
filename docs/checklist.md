@@ -92,8 +92,9 @@
 - [x] **New role: Company.** Admin creates each company with **logo, email and description**. The company gets an email with a **set-password link** (no password is chosen or shared by admin). Login uses the company email.
 - [x] **Companies post and manage their own jobs** and run a **job management / monitoring area** to track applicants through to the **final candidate**.
 - [x] **Every job application sends emails**: the applicant gets a confirmation email.
-- [ ] Define who else is emailed on application (company? admin?)
-- [ ] Define hiring stages (applied, shortlisted, interview, offered, selected, rejected) and whether each change emails the applicant
-- [ ] Decide what applicant data a company can see (limited view; consent shown on apply)
-- [ ] Decide whether admin can also post or edit jobs on behalf of a company, and whether jobs need admin approval before going live
-- [ ] Decide whether a company has one login or multiple recruiters
+- [x] On application, **only the applicant** is emailed (no email to company or admin).
+- [x] Hiring stages: Applied, Shortlisted, Interview, Offered, Selected, Rejected. **The applicant is emailed on every stage change.**
+- [x] A company can see the applicant's **complete profile**. The apply button shows a consent line: "Your complete profile will be shared with this company."
+- [x] **No admin approval**: companies publish jobs directly. **Admins can also post jobs themselves, shown as a separate "Special" category.** Admins can close or remove any listing.
+- [x] **One login per company.**
+- [x] **All admins can see every company's jobs and applicants** (monitoring).
