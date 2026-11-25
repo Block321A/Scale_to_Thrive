@@ -75,7 +75,7 @@
 - [x] **All admins are equal** (no main admin, no permission levels). Any admin can add or remove admins. Block removing the last admin and self-removal. New admins get a set-password email.
 - [x] Seats left = seats allocated minus finalized applicants (calculated, not typed). Finalizing is blocked when no seats are left.
 - [x] **Rejected applicants receive an email.**
-- [ ] Finalize: one click with immediate email, or batch send later (default: one click)
-- [ ] Track-wise job report (default: simple report)
-- [ ] CSV/Excel export of applicants (default: yes)
+- [x] **Finalize is one click; the set-password email is sent immediately after finalization.**
+- [x] **Track-wise job report** (how many enrollees applied and how many were selected, per track)
+- [x] **CSV/Excel export** of the applicant list
 - [ ] Starting admin accounts and emails (proposed: Dr. Arjun U, Prajwal A)
