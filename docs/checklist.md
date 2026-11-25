@@ -79,3 +79,7 @@
 - [x] **Track-wise job report** (how many enrollees applied and how many were selected, per track)
 - [x] **CSV/Excel export** of the applicant list
 - [ ] Starting admin accounts and emails (proposed: Dr. Arjun U, Prajwal A)
+
+## Initial admin account (decided)
+- [x] A first admin account is created when the database is set up. Its email and password are supplied through **environment variables** (`ADMIN_EMAIL`, `ADMIN_PASSWORD`) in a local, git-ignored `.env` file and on the hosting provider. They are **never committed** to the repo, and the password is stored **hashed** in the database.
+- [ ] Admin should change the initial password after first login
