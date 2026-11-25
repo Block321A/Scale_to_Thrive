@@ -98,3 +98,10 @@
 - [x] **No admin approval**: companies publish jobs directly. **Admins can also post jobs themselves, shown as a separate "Special" category.** Admins can close or remove any listing.
 - [x] **One login per company.**
 - [x] **All admins can see every company's jobs and applicants** (monitoring).
+
+## Build progress
+- [x] Apple-inspired theme (hero image, large type, rounded tiles, stat callouts), text logo, partner logos, Unsplash images
+- [x] Home page: hero, partners, both tracks, skills, 12-week curriculum, projects, assessment, careers, trainers, application form (shown only for open tracks)
+- [x] Enrollee profile page (UI only, sample data): LinkedIn-style round photo, milestones, applied jobs
+- [ ] Backend not built yet: database, admin login, set-password emails, storing applications, job listings, company area. Track dates, seats and open/closed flags are placeholders in `web/src/lib/content.ts`.
+- [ ] Replace stock portraits with real photos; trainers currently show initials
