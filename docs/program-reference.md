@@ -129,4 +129,4 @@ Outcomes: practical workbooks, at least one dashboard and one cleaning/consolida
 - Hours differ: Program A is 96h (8/week), Program B is 60h (5/week). Delivery modes also differ (online/offline vs hybrid/online/offline).
 
 ## Eligibility override (platform decision)
-The platform admits **engineering students only** for both tracks, even though the original proposals list wider audiences (B.Com, BBA, BA, BCA, B.Sc., diploma). The web content should follow this rule, not the proposal text.
+The platform admits **engineering students and recently passed-out engineering graduates** for both tracks, even though the original proposals list wider audiences (B.Com, BBA, BA, BCA, B.Sc., diploma). The web content should follow this rule, not the proposal text.

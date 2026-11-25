@@ -11,7 +11,7 @@
 - [x] **Application form on the home page** appears only while an admin has applications **open** for that track. Admin can open and close applications per track.
 - [x] **Admins review applications and finalize** the accepted applicants. **Only finalized applicants** get access to their enrollee profile.
 - [x] Terminology: "chariot" is taken to mean the workshop/program (a track).
-- [x] **Eligibility: engineering students only** (both tracks). This overrides the proposals' "Who should join" lists, which also named B.Com, BBA, BA, BCA and others. The home page's "Who should join" section must say engineering students only.
+- [x] **Eligibility: engineering students and recently passed-out engineering graduates** (both tracks). This overrides the proposals' "Who should join" lists, which also named B.Com, BBA, BA, BCA and others. The home page's "Who should join" section must say engineering students and recent graduates.
 - [x] Application form Education section has the **college name only** (degree/branch, year and CGPA fields removed).
 
 ## Open decisions
