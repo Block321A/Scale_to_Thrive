@@ -69,3 +69,13 @@
 - [ ] Define milestones (proposal: 12 weekly milestones plus projects and final assessment)
 - [ ] Define job application statuses (applied, shortlisted, rejected, selected)
 - [ ] Set-password link: expiry, resend, forgot-password
+
+## Admin panel (decided)
+- [x] Sections: dashboard, track settings, applications, enrollees, jobs, admin accounts.
+- [x] **All admins are equal** (no main admin, no permission levels). Any admin can add or remove admins. Block removing the last admin and self-removal. New admins get a set-password email.
+- [x] Seats left = seats allocated minus finalized applicants (calculated, not typed). Finalizing is blocked when no seats are left.
+- [x] **Rejected applicants receive an email.**
+- [ ] Finalize: one click with immediate email, or batch send later (default: one click)
+- [ ] Track-wise job report (default: simple report)
+- [ ] CSV/Excel export of applicants (default: yes)
+- [ ] Starting admin accounts and emails (proposed: Dr. Arjun U, Prajwal A)
