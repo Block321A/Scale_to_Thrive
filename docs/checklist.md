@@ -60,3 +60,12 @@
 - [ ] Finalized applicants receive login access
 - [ ] Enrollee profile page (design in progress)
 - [ ] Job listing page (admin posts jobs; shown to visitors and/or enrollees; to be defined)
+
+## Enrollee profile (decided)
+- [x] When an admin **finalizes** an applicant, the system emails them a **set-password link**. They can log in only after setting a password.
+- [x] Profile shows: **profile details**, **chosen track** (IT or Non-IT) and **workshop milestones** (progress).
+- [x] A **separate Jobs section** in the profile lists the jobs posted by admin. The enrollee can **apply** to them.
+- [x] The enrollee can see their **applied-job details** (which jobs they applied to, and the status).
+- [ ] Define milestones (proposal: 12 weekly milestones plus projects and final assessment)
+- [ ] Define job application statuses (applied, shortlisted, rejected, selected)
+- [ ] Set-password link: expiry, resend, forgot-password
