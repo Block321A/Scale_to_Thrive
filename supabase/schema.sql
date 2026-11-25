@@ -472,3 +472,6 @@ insert into public.track_milestones (track_id, week, title, details) values
   ('non-it', 12, 'Integrated Projects & Assessment', 'Business reporting project, presentation, assessment.');
 
 -- The first admin is NOT created here. See docs/deployment-guide.md, step 3.
+
+-- The server (service role) calls this to build an enrollee after the invite is sent.
+grant execute on function public.create_enrollee(uuid, uuid) to service_role;

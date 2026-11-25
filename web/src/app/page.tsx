@@ -1,11 +1,12 @@
 import Image from "next/image";
-import { tracks, partners, formatDate } from "@/lib/content";
+import { partners, formatDate } from "@/lib/content";
+import { loadTracks } from "@/lib/data";
 import ApplicationForm from "@/components/ApplicationForm";
 
-const seatsLeft = (t: (typeof tracks)[number]) => Math.max(t.seatsTotal - t.seatsFilled, 0);
-
-export default function Home() {
-  const openTracks = tracks.filter((t) => t.applicationsOpen && seatsLeft(t) > 0);
+export default async function Home() {
+  const tracks = await loadTracks();
+  const seatsLeft = (t: (typeof tracks)[number]) => t.seatsLeft;
+  const openTracks = tracks.filter((t) => t.applicationsOpen && t.seatsLeft > 0);
 
   return (
     <>

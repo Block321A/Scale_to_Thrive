@@ -2,7 +2,7 @@
 
 You need two free accounts: [supabase.com](https://supabase.com) and [vercel.com](https://vercel.com). The code is on GitHub (`Block321A/Scale_to_Thrive`).
 
-> The website code does not talk to Supabase yet. This guide sets up the database and hosting. The next build step connects them.
+> The website is connected to Supabase. It shows built-in sample content until you add the Supabase keys (step 6), and the private areas (admin, company, jobs, profile) need the database.
 
 ## 1. Create the database (Supabase)
 1. Supabase dashboard -> **New project**. Pick a name, a strong database password (save it in a password manager) and the region closest to your users (for India, Mumbai / `ap-south-1`).
@@ -32,12 +32,15 @@ Never paste these in chat or commit them. They go only into Vercel (step 6) and 
 ## 5. Email (important)
 Supabase's built-in email sender allows only a few emails an hour, which is not enough for invites, rejections and stage updates. Before going live:
 - **Project Settings -> Authentication -> SMTP Settings**: connect an email service such as Resend or Brevo (both have free tiers) and use a sender address on a domain you own.
-- Edit the **Invite user** and **Reset password** templates (Authentication -> Emails) with the Scale to Thrive wording.
+- Edit the email templates (**Authentication -> Emails**). The links MUST use the form below, or the set-password pages will not work:
+  - **Invite user**: link `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=invite&next=/set-password`
+  - **Reset password**: link `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/set-password`
+- Application received, rejection and job-stage emails are sent by the website itself through Resend. Create a free Resend account, verify your sender domain, and add `RESEND_API_KEY` and `EMAIL_FROM` in Vercel. Until then those emails are only written to the server log.
 
 ## 6. Host the website (Vercel)
 1. Vercel dashboard -> **Add New -> Project** -> import `Block321A/Scale_to_Thrive` (give Vercel access to the repo when asked).
 2. **Root Directory**: set to `web` (the Next.js app lives in that folder). Framework preset should say Next.js.
-3. **Environment Variables**: add the four names from `web/.env.example` with your values. Mark the service role key as **Sensitive**.
+3. **Environment Variables**: add the names from `web/.env.example` with your values (`RESEND_API_KEY` and `EMAIL_FROM` are optional at first). Mark the service role key and the Resend key as **Sensitive**.
 4. Production branch: Vercel deploys the branch you choose. Use `main` for production; other branches get preview URLs. (The work is currently on `claude/intelligent-volta-m3clk7`.)
 5. Click **Deploy**. You get a URL like `https://scale-to-thrive.vercel.app`.
 

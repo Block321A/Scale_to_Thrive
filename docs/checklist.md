@@ -112,3 +112,11 @@
 - [ ] Create the Supabase project and run the schema (user)
 - [ ] Wire the app to Supabase: admin login, track settings, applications, finalize + invite email, enrollee profile, companies and jobs
 - [ ] Configure SMTP email provider
+
+## Backend built (code written, not yet tested against a live Supabase)
+- [x] Login, forgot password, set-password (via /auth/confirm), sign out; route protection in src/proxy.ts
+- [x] Home page reads dates, seats, open/closed and handlers from the database; application form saves to it (resume and photo uploads)
+- [x] Admin: dashboard, tracks (date, seats, open/close, handlers), applications (filter, shortlist, reject+email, finalize+invite, CSV export), enrollees (milestones, resend link), jobs (Special jobs, track report), companies (create + invite), admins (invite, remove)
+- [x] Company: post/close jobs, applicants with full profile, resume, stage changes with email
+- [x] Enrollee: real profile, job listing, apply with confirmation email
+- [ ] Test the whole flow on a real Supabase project
