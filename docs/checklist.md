@@ -87,3 +87,13 @@
 ## First admin account
 - [x] The first admin (`scaletothrive@gmail.com`) is created from environment variables (`ADMIN_EMAIL`, `ADMIN_PASSWORD`) when the database is seeded. The password is **hashed**, never stored in plain text and **never committed** to the repo.
 - [ ] Force a password change on first login (the initial password is weak)
+
+## Companies and jobs (decided)
+- [x] **New role: Company.** Admin creates each company with **logo, email and description**. The company gets an email with a **set-password link** (no password is chosen or shared by admin). Login uses the company email.
+- [x] **Companies post and manage their own jobs** and run a **job management / monitoring area** to track applicants through to the **final candidate**.
+- [x] **Every job application sends emails**: the applicant gets a confirmation email.
+- [ ] Define who else is emailed on application (company? admin?)
+- [ ] Define hiring stages (applied, shortlisted, interview, offered, selected, rejected) and whether each change emails the applicant
+- [ ] Decide what applicant data a company can see (limited view; consent shown on apply)
+- [ ] Decide whether admin can also post or edit jobs on behalf of a company, and whether jobs need admin approval before going live
+- [ ] Decide whether a company has one login or multiple recruiters
