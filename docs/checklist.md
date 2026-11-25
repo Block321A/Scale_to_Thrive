@@ -5,6 +5,8 @@
 - [x] The **home page showcases all workshop content**: both tracks, curriculum, projects, job roles, delivery format, assessment, the team and enquiry.
 - [x] Stack: Next.js + TypeScript + Tailwind (scaffold in `web/`). Database to be decided.
 
+- [x] **Admin-editable intake info on the home page:** for each of the two tracks, an admin can update the **opening (start) date** and the **number of seats allocated**. The home page shows these values.
+
 ## Open decisions
 - [ ] First release scope: public site and enquiries only, or include the student portal?
 - [ ] Organization and branding (PES ITM / PES CoE or a separate brand)? Logo, colors, domain?
@@ -13,6 +15,11 @@
 - [ ] Hosting preference and budget?
 
 ## Phase 1: Home page and public site
+- [ ] Database table for per-track intake: start date, total seats, seats filled
+- [ ] Admin login (protected `/admin` area, one or a few admin accounts)
+- [ ] Admin form to edit opening date and seats for IT and Non-IT
+- [ ] Home page reads these values live; show "seats left" and a "Full" state when it reaches zero
+- [ ] Decide how "seats filled" is counted: manual number set by admin, or counted from enrollments
 - [ ] Hero: name, tagline, the two tracks, key facts (12 weeks, hybrid)
 - [ ] Track overview: IT vs Non-IT, with who each is for
 - [ ] Program details per track: hours, weekly format, technologies or skills
