@@ -127,3 +127,6 @@ Outcomes: practical workbooks, at least one dashboard and one cleaning/consolida
 - Two programs share the same structure (12 weeks, weekly modules, projects, weighted assessments, career roles). A data model with **Program → Week/Module → Session → Project → Assessment** would cover both.
 - Likely audiences: students (enroll, view curriculum, track progress), trainers (Dr. Arjun U, Prajwal A), and training or college partners (view proposals, enquire).
 - Hours differ: Program A is 96h (8/week), Program B is 60h (5/week). Delivery modes also differ (online/offline vs hybrid/online/offline).
+
+## Eligibility override (platform decision)
+The platform admits **engineering students only** for both tracks, even though the original proposals list wider audiences (B.Com, BBA, BA, BCA, B.Sc., diploma). The web content should follow this rule, not the proposal text.
