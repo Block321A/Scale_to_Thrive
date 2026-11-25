@@ -6,10 +6,11 @@ import { requireRole } from "@/lib/auth";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { siteUrl } from "@/lib/supabase/env";
 import { sendEmail, mails } from "@/lib/email";
+import { createImplicitClient } from "@/lib/supabase/implicit";
 
 const str = (f: FormData, k: string) => String(f.get(k) ?? "").trim();
 const back = (path: string, msg: string, ok = true) => redirect(`${path}?${ok ? "ok" : "err"}=${encodeURIComponent(msg)}`);
-const inviteTo = `${siteUrl}/auth/confirm?next=/set-password`;
+const inviteTo = `${siteUrl}/set-password`;
 
 // ---- Tracks and handlers -------------------------------------------------
 export async function updateTrack(f: FormData) {
@@ -101,8 +102,7 @@ export async function setMilestone(f: FormData) {
 
 export async function resendLink(f: FormData) {
   await requireRole("admin");
-  const supabase = await createClient();
-  await supabase.auth.resetPasswordForEmail(str(f, "email"));
+  await createImplicitClient().auth.resetPasswordForEmail(str(f, "email"), { redirectTo: inviteTo });
   back(str(f, "from") || "/admin/enrollees", "Set-password email sent");
 }
 

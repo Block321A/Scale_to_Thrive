@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getProfile, homeFor } from "@/lib/auth";
-import { supabaseConfigured } from "@/lib/supabase/env";
+import { supabaseConfigured, siteUrl } from "@/lib/supabase/env";
+import { createImplicitClient } from "@/lib/supabase/implicit";
 
 async function signIn(formData: FormData) {
   "use server";
@@ -17,8 +18,7 @@ async function signIn(formData: FormData) {
 
 async function forgot(formData: FormData) {
   "use server";
-  const supabase = await createClient();
-  await supabase.auth.resetPasswordForEmail(String(formData.get("email")).trim());
+  await createImplicitClient().auth.resetPasswordForEmail(String(formData.get("email")).trim(), { redirectTo: `${siteUrl}/set-password` });
   redirect("/login?sent=1");
 }
 
@@ -36,6 +36,7 @@ export default async function Login({ searchParams }: PageProps<"/login">) {
       <p className="mt-2 text-muted">For admins, companies and enrolled students.</p>
       {sp.error === "credentials" && <p className="mt-6 rounded-xl bg-red-50 p-3 text-sm text-red-700">Wrong email or password.</p>}
       {sp.error === "link" && <p className="mt-6 rounded-xl bg-red-50 p-3 text-sm text-red-700">That link is invalid or has expired. Ask for a new one.</p>}
+      {sp.done && <p className="mt-6 rounded-xl bg-green-50 p-3 text-sm text-green-800">Password saved. You can sign in now.</p>}
       {sp.sent && <p className="mt-6 rounded-xl bg-green-50 p-3 text-sm text-green-800">If that email has an account, a reset link is on its way.</p>}
       {!supabaseConfigured && <p className="mt-6 rounded-xl bg-amber-50 p-3 text-sm text-amber-800">The database is not connected yet.</p>}
       <form action={signIn} className="mt-8 space-y-4">

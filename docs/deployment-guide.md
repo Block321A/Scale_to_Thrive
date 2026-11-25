@@ -30,11 +30,11 @@ update public.profiles set role = 'admin' where email = 'scaletothrive@gmail.com
 Never paste these in chat or commit them. They go only into Vercel (step 6) and `web/.env.local`.
 
 ## 5. Email (important)
-Supabase's built-in email sender allows only a few emails an hour, which is not enough for invites, rejections and stage updates. Before going live:
-- **Project Settings -> Authentication -> SMTP Settings**: connect an email service such as Resend or Brevo (both have free tiers) and use a sender address on a domain you own.
-- Edit the email templates (**Authentication -> Emails**). The links MUST use the form below, or the set-password pages will not work:
-  - **Invite user**: link `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=invite&next=/set-password`
-  - **Reset password**: link `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/set-password`
+Supabase's built-in email sender is not usable for this project: it sends only a couple of emails an hour and, on new projects, only to your own team members. Applicants and companies would never receive their set-password emails. Connect your own sender first:
+- **Authentication -> Emails -> SMTP Settings -> Set up SMTP.**
+- Quick start without a domain: a Gmail account with an **App Password** (Google Account -> Security -> 2-Step Verification -> App passwords). Host `smtp.gmail.com`, port `465`, username the Gmail address, password the app password. Limit is roughly 500 emails a day.
+- Better for launch: Brevo or Resend with your own verified domain.
+- The website's set-password page works with Supabase's **default** invite and reset links, so you do not need to edit the email templates. After SMTP is connected you may still restyle them, but keep the link as `{{ .ConfirmationURL }}`.
 - Application received, rejection and job-stage emails are sent by the website itself through Resend. Create a free Resend account, verify your sender domain, and add `RESEND_API_KEY` and `EMAIL_FROM` in Vercel. Until then those emails are only written to the server log.
 
 ## 6. Host the website (Vercel)
