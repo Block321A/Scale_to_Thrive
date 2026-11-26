@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import type { Session } from "@supabase/supabase-js";
 import Logo from "./Logo";
+import { createClient } from "@/lib/supabase/client";
 
 const links = [
   ["/#tracks", "Workshops"],
@@ -12,8 +14,31 @@ const links = [
   ["/jobs", "Jobs"],
 ] as const;
 
+type Who = { name: string } | null;
+
 export default function Nav() {
   const [open, setOpen] = useState(false);
+  // undefined = still checking, null = signed out, object = signed in.
+  // Checked in the browser so the pages themselves can stay cached and fast.
+  const configured = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL);
+  const [who, setWho] = useState<Who | undefined>(configured ? undefined : null);
+
+  useEffect(() => {
+    if (!configured) return;
+    const supabase = createClient();
+    const read = (s: Session | null) =>
+      setWho(s ? { name: (s.user.user_metadata?.full_name as string | undefined) || s.user.email || "My account" } : null);
+    supabase.auth.getSession().then(({ data }) => read(data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => read(s));
+    return () => sub.subscription.unsubscribe();
+  }, [configured]);
+
+  const signOut = (cls: string) => (
+    <form action="/auth/signout" method="post" className={cls}>
+      <button className="rounded-full px-3 py-1.5 text-sm font-medium text-foreground hover:bg-black/5">Sign out</button>
+    </form>
+  );
+
   return (
     <header className="sticky top-0 z-50 border-b border-black/5 bg-white/90 backdrop-blur-xl">
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
@@ -26,9 +51,20 @@ export default function Nav() {
         </ul>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Always visible, including on phones */}
-          <Link href="/login" className="rounded-full px-3 py-1.5 text-sm font-medium text-foreground hover:bg-black/5">Sign in</Link>
-          <Link href="/#apply" className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0077ed]">Apply</Link>
+          {who === undefined ? (
+            <span className="h-9 w-28" aria-hidden="true" />
+          ) : who ? (
+            <>
+              {/* /login sends a signed-in person straight to their own area */}
+              <Link href="/login" className="max-w-[8rem] truncate rounded-full bg-surface px-4 py-1.5 text-sm font-medium hover:bg-black/10" title={who.name}>{who.name.split(" ")[0]}</Link>
+              {signOut("hidden md:block")}
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="rounded-full px-3 py-1.5 text-sm font-medium text-foreground hover:bg-black/5">Sign in</Link>
+              <Link href="/#apply" className="rounded-full bg-accent px-4 py-1.5 text-sm font-medium text-white hover:bg-[#0077ed]">Apply</Link>
+            </>
+          )}
           <button
             type="button"
             className="grid size-10 place-items-center rounded-full hover:bg-black/5 md:hidden"
@@ -48,9 +84,10 @@ export default function Nav() {
           <ul className="mx-auto max-w-6xl px-4 py-2 sm:px-6">
             {links.map(([href, label]) => (
               <li key={href}>
-                <Link href={href} onClick={() => setOpen(false)} className="block border-b border-black/5 py-3 text-base last:border-0">{label}</Link>
+                <Link href={href} onClick={() => setOpen(false)} className="block border-b border-black/5 py-3 text-base">{label}</Link>
               </li>
             ))}
+            {who && <li className="py-2">{signOut("")}</li>}
           </ul>
         </div>
       )}

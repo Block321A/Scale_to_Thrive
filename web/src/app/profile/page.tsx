@@ -32,7 +32,7 @@ export default async function Profile() {
       </div>
       <div className="mx-auto max-w-4xl px-0 md:px-6">
         <div className="relative rounded-b-[28px] bg-white px-8 pb-8 pt-24 shadow-sm">
-          <div className="absolute -top-20 left-8"><Avatar src={me.photo_url ?? "/images/portrait-1.jpg"} name={me.full_name ?? "Profile"} size={160} /></div>
+          <div className="absolute -top-20 left-8"><Avatar src={me.photo_url} name={me.full_name ?? me.email} size={160} /></div>
           <div className="absolute right-6 top-6 flex gap-3 text-sm"><Link href="/jobs" className="text-accent">Browse jobs</Link>
             <form action="/auth/signout" method="post"><button className="text-muted hover:text-foreground">Sign out</button></form></div>
           <h1 className="text-3xl font-semibold tracking-tight">{me.full_name}</h1>
