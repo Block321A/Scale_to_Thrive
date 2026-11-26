@@ -43,7 +43,7 @@ export async function moveStage(f: FormData) {
   const row = ja as unknown as { jobs: { title: string; companies: { name: string } | null }; enrollees: { profiles: { full_name: string | null; email: string } } } | null;
   if (row) {
     const m = mails.stage(row.enrollees.profiles.full_name ?? "there", row.jobs.title, row.jobs.companies?.name ?? "the company", stage);
-    await sendEmail(row.enrollees.profiles.email, m.subject, m.text);
+    await sendEmail(row.enrollees.profiles.email, m);
   }
   revalidatePath("/company/applicants");
   redirect("/company/applicants?ok=" + encodeURIComponent("Stage updated and applicant emailed"));

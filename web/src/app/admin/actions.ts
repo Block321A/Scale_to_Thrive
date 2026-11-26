@@ -55,7 +55,7 @@ export async function setApplicationStatus(f: FormData) {
   if (error || !app) return back("/admin/applications", error?.message ?? "Failed", false);
   if (status === "rejected") {
     const m = mails.rejected(app.full_name, app.track_id === "it" ? "IT" : "Non-IT");
-    await sendEmail(app.email, m.subject, m.text);
+    await sendEmail(app.email, m);
   }
   revalidatePath("/admin/applications");
   back("/admin/applications", status === "rejected" ? "Rejected and emailed" : "Updated");

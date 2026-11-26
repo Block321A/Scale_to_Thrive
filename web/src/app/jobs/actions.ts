@@ -15,6 +15,6 @@ export async function applyToJob(f: FormData) {
   const { data: job } = await supabase.from("jobs").select("title, companies(name)").eq("id", jobId).single();
   const j = job as unknown as { title: string; companies: { name: string } | null } | null;
   const m = mails.jobApplied(me.full_name ?? "there", j?.title ?? "the job", j?.companies?.name ?? "Scale to Thrive");
-  await sendEmail(me.email, m.subject, m.text);
+  await sendEmail(me.email, m);
   redirect("/jobs?ok=" + encodeURIComponent("Applied. A confirmation email is on its way."));
 }

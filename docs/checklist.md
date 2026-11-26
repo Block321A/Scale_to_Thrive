@@ -120,3 +120,10 @@
 - [x] Company: post/close jobs, applicants with full profile, resume, stage changes with email
 - [x] Enrollee: real profile, job listing, apply with confirmation email
 - [ ] Test the whole flow on a real Supabase project
+
+## Email templates (done)
+- [x] One branded layout (logo, purpose box, partner logos, footer) in `web/src/lib/email-layout.ts`
+- [x] Website emails (HTML + plain text): application received, application rejected, job applied, job stage changes (applied, shortlisted, interview, offered, selected, rejected)
+- [x] Supabase emails generated to `supabase/email-templates/`: invite, reset password, confirm sign up, magic link, change email, reauthentication. Paste into Supabase -> Authentication -> Emails. Rebuild with `npm run build:emails` in `web/`.
+- [x] Website emails can send through SMTP (Gmail) or Resend. Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` in Vercel.
+- [ ] Replace low-resolution partner logos (cropped from the poster) with official files

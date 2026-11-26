@@ -68,6 +68,6 @@ export async function submitApplication(_: ApplyState, formData: FormData): Prom
 
   const trackName = trackId === "it" ? "IT" : "Non-IT";
   const m = mails.received(name, trackName);
-  await sendEmail(email, m.subject, m.text);
+  await sendEmail(email, m);
   return { ok: true, message: "Thank you for applying. We will email you once your application is reviewed." };
 }

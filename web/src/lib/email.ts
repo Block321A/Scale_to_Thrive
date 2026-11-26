@@ -1,42 +1,48 @@
-// Sends mail through Resend if RESEND_API_KEY is set. Otherwise logs it (useful in development).
-// Set-password / invite emails are sent by Supabase itself, not here.
-export async function sendEmail(to: string, subject: string, text: string) {
-  const key = process.env.RESEND_API_KEY;
-  const from = process.env.EMAIL_FROM ?? "Scale to Thrive <onboarding@resend.dev>";
-  if (!key) {
-    console.log(`[email not sent: RESEND_API_KEY missing] to=${to} subject=${subject}`);
-    return false;
-  }
+import nodemailer from "nodemailer";
+import { siteUrl } from "@/lib/supabase/env";
+import * as T from "@/lib/email-templates";
+import type { Mail } from "@/lib/email-templates";
+
+// Sends through SMTP (e.g. Gmail) if SMTP_HOST is set, else through Resend if RESEND_API_KEY is set.
+// With neither, the email is only logged. Set-password / invite emails are sent by Supabase itself.
+export async function sendEmail(to: string, mail: Mail): Promise<boolean> {
+  const smtpUser = process.env.SMTP_USER;
+  const from = process.env.EMAIL_FROM ?? `Scale to Thrive <${smtpUser ?? "onboarding@resend.dev"}>`;
+
   try {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ from, to, subject, text }),
-    });
-    if (!res.ok) console.error("Email failed", res.status, await res.text());
-    return res.ok;
+    if (process.env.SMTP_HOST && smtpUser && process.env.SMTP_PASS) {
+      const port = Number(process.env.SMTP_PORT ?? 465);
+      const transport = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port,
+        secure: port === 465,
+        auth: { user: smtpUser, pass: process.env.SMTP_PASS },
+      });
+      await transport.sendMail({ from, to, subject: mail.subject, html: mail.html, text: mail.text });
+      return true;
+    }
+    const key = process.env.RESEND_API_KEY;
+    if (key) {
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ from, to, subject: mail.subject, html: mail.html, text: mail.text }),
+      });
+      if (!res.ok) console.error("Email failed", res.status, await res.text());
+      return res.ok;
+    }
+    console.log(`[email not sent: no SMTP_* or RESEND_API_KEY configured] to=${to} subject=${mail.subject}`);
+    return false;
   } catch (e) {
     console.error("Email error", e);
     return false;
   }
 }
 
-const sign = "\n\nScale to Thrive\nAnvesana TBI and PES Trust";
+// Every email the website sends. Each returns { subject, html, text }.
 export const mails = {
-  received: (name: string, track: string) => ({
-    subject: "We received your application",
-    text: `Hi ${name},\n\nThank you for applying to the Scale to Thrive ${track} workshop. We will email you once your application is reviewed.${sign}`,
-  }),
-  rejected: (name: string, track: string) => ({
-    subject: "Your Scale to Thrive application",
-    text: `Hi ${name},\n\nThank you for applying to the ${track} workshop. We are sorry to say you were not selected for this batch. You are welcome to apply again when the next batch opens.${sign}`,
-  }),
-  jobApplied: (name: string, job: string, company: string) => ({
-    subject: `Application received: ${job}`,
-    text: `Hi ${name},\n\nYour application for "${job}" at ${company} was submitted. Your complete profile has been shared with the company. We will email you when your status changes.${sign}`,
-  }),
-  stage: (name: string, job: string, company: string, stage: string) => ({
-    subject: `Update on your application: ${job}`,
-    text: `Hi ${name},\n\nYour application for "${job}" at ${company} is now: ${stage.toUpperCase()}.${sign}`,
-  }),
+  received: (name: string, track: string) => T.applicationReceived(siteUrl, name, track),
+  rejected: (name: string, track: string) => T.applicationRejected(siteUrl, name, track),
+  jobApplied: (name: string, job: string, company: string) => T.jobApplied(siteUrl, name, job, company),
+  stage: (name: string, job: string, company: string, stage: string) => T.jobStage(siteUrl, name, job, company, stage),
 };
