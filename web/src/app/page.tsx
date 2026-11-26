@@ -1,7 +1,8 @@
 import Image from "next/image";
-import { partners, formatDate } from "@/lib/content";
+import { formatDate } from "@/lib/content";
 import { loadTracks } from "@/lib/data";
 import ApplicationForm from "@/components/ApplicationForm";
+import PartnerStrip from "@/components/PartnerStrip";
 
 export default async function Home() {
   const tracks = await loadTracks();
@@ -31,10 +32,8 @@ export default async function Home() {
 
       {/* Partners */}
       <section className="border-b border-black/5">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-12 gap-y-6 px-6 py-10">
-          {partners.map((p) => (
-            <Image key={p.name} src={p.file} alt={p.name} width={140} height={56} className="h-10 w-auto object-contain" />
-          ))}
+        <div className="mx-auto max-w-6xl px-5 py-10">
+          <PartnerStrip />
         </div>
       </section>
 
