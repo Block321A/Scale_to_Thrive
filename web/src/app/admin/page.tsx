@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { card } from "@/lib/ui";
+import { card, btnGhost } from "@/lib/ui";
 import { formatDate } from "@/lib/content";
 
 export default async function Dashboard() {
@@ -18,7 +18,10 @@ export default async function Dashboard() {
   );
   return (
     <>
-      <h1 className="mb-6 text-3xl font-semibold tracking-tight">Dashboard</h1>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-3xl font-semibold tracking-tight">Dashboard</h1>
+        <a href="/admin/export?type=members" className={btnGhost}>Download all members (Excel)</a>
+      </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stat("New applications", pending.count)}
         {stat("Enrollees", enrollees.count)}

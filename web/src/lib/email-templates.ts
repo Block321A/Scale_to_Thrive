@@ -149,3 +149,34 @@ export function passwordReset(baseUrl: string, name: string, link: string): Mail
     showAbout: false,
   });
 }
+
+// ---------- Shortlisting emails (separate from the final selection) ----------
+
+export function applicationShortlisted(baseUrl: string, name: string, track: string): Mail {
+  return build("You have been shortlisted for Scale to Thrive", {
+    baseUrl,
+    preheader: `Good news: your application for the ${track} workshop is shortlisted.`,
+    eyebrow: "Shortlisted",
+    title: `Good news ${name.split(" ")[0]}, you are shortlisted`,
+    paragraphs: [
+      `Your application for the <strong>${esc(track)} track</strong> of the Scale to Thrive workshop has been shortlisted.`,
+      "<strong>What this means</strong><br>&bull; Your application stood out and has moved to the final round of review.<br>&bull; Shortlisting is not the final selection. Seats are limited, so we will confirm the final list soon.<br>&bull; If you are selected, you will receive a congratulations email and a separate email to set your password and sign in.",
+      "Please keep your phone and inbox handy, including the Spam folder, so you do not miss our next update.",
+    ],
+    cta: { label: "About the workshop", url: baseUrl },
+  });
+}
+
+export function jobShortlisted(baseUrl: string, name: string, job: string, company: string): Mail {
+  return build(`You are shortlisted: ${job}`, {
+    baseUrl,
+    preheader: `${company} has shortlisted you for ${job}.`,
+    eyebrow: "Job application: Shortlisted",
+    title: "You have been shortlisted",
+    paragraphs: [
+      `Hi ${esc(name.split(" ")[0])}, <strong>${esc(company)}</strong> has shortlisted you for the <strong>${esc(job)}</strong> role.`,
+      "<strong>What happens next</strong><br>&bull; The company may contact you by email or phone, so keep both handy.<br>&bull; Prepare by revisiting your workshop projects and being ready to explain your problem, approach, code and outcome.<br>&bull; We will email you again when the company moves you to the next stage.",
+    ],
+    cta: { label: "View my applications", url: `${baseUrl}/profile` },
+  });
+}

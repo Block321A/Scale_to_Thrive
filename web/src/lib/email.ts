@@ -42,7 +42,9 @@ export async function sendEmail(to: string, mail: Mail): Promise<boolean> {
 // Every email the website sends. Each returns { subject, html, text }.
 export const mails = {
   received: (name: string, track: string) => T.applicationReceived(siteUrl, name, track),
+  shortlisted: (name: string, track: string) => T.applicationShortlisted(siteUrl, name, track),
   rejected: (name: string, track: string) => T.applicationRejected(siteUrl, name, track),
+  jobShortlisted: (name: string, job: string, company: string) => T.jobShortlisted(siteUrl, name, job, company),
   jobApplied: (name: string, job: string, company: string) => T.jobApplied(siteUrl, name, job, company),
   stage: (name: string, job: string, company: string, stage: string) => T.jobStage(siteUrl, name, job, company, stage),
 };

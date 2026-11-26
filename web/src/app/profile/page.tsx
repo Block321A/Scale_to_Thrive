@@ -65,7 +65,7 @@ export default async function Profile() {
               return (
                 <li key={a.id} className="flex items-center justify-between py-4">
                   <div><p className="font-medium">{j.title}</p><p className="text-sm text-muted">{j.is_special ? "Scale to Thrive" : j.companies?.name}</p></div>
-                  <span className="rounded-full bg-surface px-3 py-1 text-sm capitalize">{a.stage}</span>
+                  <div className="flex items-center gap-3"><a href={`/documents/job-application?id=${a.id}`} className="text-sm text-accent">Download application</a><span className="rounded-full bg-surface px-3 py-1 text-sm capitalize">{a.stage}</span></div>
                 </li>
               );
             })}

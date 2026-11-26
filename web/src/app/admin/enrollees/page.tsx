@@ -15,7 +15,13 @@ export default async function Enrollees({ searchParams }: PageProps<"/admin/enro
 
   return (
     <>
-      <h1 className="mb-6 text-3xl font-semibold tracking-tight">Enrollees</h1>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-3xl font-semibold tracking-tight">Enrollees</h1>
+        <div className="flex flex-wrap gap-2">
+          <a href="/admin/export?type=enrollees" className={btnGhost}>Export enrollees (Excel)</a>
+          <a href="/admin/export?type=members" className={btnGhost}>Export all members (Excel)</a>
+        </div>
+      </div>
       <Notice ok={sp.ok} err={sp.err} />
       <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
         <table className="w-full">

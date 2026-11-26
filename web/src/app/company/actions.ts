@@ -42,7 +42,9 @@ export async function moveStage(f: FormData) {
     .eq("id", id).single();
   const row = ja as unknown as { jobs: { title: string; companies: { name: string } | null }; enrollees: { profiles: { full_name: string | null; email: string } } } | null;
   if (row) {
-    const m = mails.stage(row.enrollees.profiles.full_name ?? "there", row.jobs.title, row.jobs.companies?.name ?? "the company", stage);
+    const who = row.enrollees.profiles.full_name ?? "there";
+    const comp = row.jobs.companies?.name ?? "the company";
+    const m = stage === "shortlisted" ? mails.jobShortlisted(who, row.jobs.title, comp) : mails.stage(who, row.jobs.title, comp, stage);
     await sendEmail(row.enrollees.profiles.email, m);
   }
   revalidatePath("/company/applicants");

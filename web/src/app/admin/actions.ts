@@ -51,12 +51,11 @@ export async function setApplicationStatus(f: FormData) {
     .update({ status, reviewed_by: me.id, reviewed_at: new Date().toISOString() })
     .eq("id", id).select("full_name, email, track_id").single();
   if (error || !app) return back("/admin/applications", error?.message ?? "Failed", false);
-  if (status === "rejected") {
-    const m = mails.rejected(app.full_name, app.track_id === "it" ? "IT" : "Non-IT");
-    await sendEmail(app.email, m);
-  }
+  const trackName = app.track_id === "it" ? "IT" : "Non-IT";
+  if (status === "rejected") await sendEmail(app.email, mails.rejected(app.full_name, trackName));
+  if (status === "shortlisted") await sendEmail(app.email, mails.shortlisted(app.full_name, trackName));
   revalidatePath("/admin/applications");
-  back("/admin/applications", status === "rejected" ? "Rejected and emailed" : "Updated");
+  back("/admin/applications", status === "rejected" ? "Rejected and emailed" : status === "shortlisted" ? "Shortlisted and emailed" : "Updated");
 }
 
 // One click: finalize (checks seats), email the set-password link, build the enrollee profile.

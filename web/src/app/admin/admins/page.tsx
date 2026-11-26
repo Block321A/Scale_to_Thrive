@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Notice from "@/components/Notice";
 import { inviteAdmin, removeAdmin } from "../actions";
-import { field, btn, btnDanger, card } from "@/lib/ui";
+import { field, btn, btnDanger, btnGhost, card } from "@/lib/ui";
 
 export default async function Admins({ searchParams }: PageProps<"/admin/admins">) {
   const sp = await searchParams;
@@ -9,7 +9,10 @@ export default async function Admins({ searchParams }: PageProps<"/admin/admins"
   const { data } = await supabase.from("profiles").select("id, email, full_name").eq("role", "admin").order("created_at");
   return (
     <>
-      <h1 className="mb-6 text-3xl font-semibold tracking-tight">Admins</h1>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-3xl font-semibold tracking-tight">Admins</h1>
+        <a href="/admin/export?type=admins" className={btnGhost}>Export Excel</a>
+      </div>
       <Notice ok={sp.ok} err={sp.err} />
       <p className="mb-4 text-sm text-muted">All admins have the same access. The last admin and yourself cannot be removed.</p>
       <form action={inviteAdmin} className={card + " mb-6 flex flex-wrap gap-3"}>

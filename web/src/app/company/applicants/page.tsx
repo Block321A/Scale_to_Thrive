@@ -2,7 +2,7 @@ import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import Notice from "@/components/Notice";
 import { moveStage } from "../actions";
-import { field, btn, card } from "@/lib/ui";
+import { field, btn, btnGhost, card } from "@/lib/ui";
 
 const stages = ["applied", "shortlisted", "interview", "offered", "selected", "rejected"];
 
@@ -25,7 +25,10 @@ export default async function Applicants({ searchParams }: PageProps<"/company/a
 
   return (
     <>
-      <h1 className="mb-6 text-3xl font-semibold tracking-tight">Applicants</h1>
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-3xl font-semibold tracking-tight">Applicants</h1>
+        <a href="/company/export" className={btnGhost}>Export Excel</a>
+      </div>
       <Notice ok={sp.ok} err={sp.err} />
       <div className="space-y-4">
         {rows.map((r) => {
@@ -46,11 +49,14 @@ export default async function Applicants({ searchParams }: PageProps<"/company/a
                   {r.enrollees.resume_path && <p className="text-sm"><a className="text-accent" href={`/company/resume?path=${encodeURIComponent(r.enrollees.resume_path)}`}>Resume</a></p>}
                   {r.note && <p className="mt-1 text-sm">Note from applicant: {r.note}</p>}
                 </div>
+                <div className="flex flex-col items-end gap-2">
                 <form action={moveStage} className="flex items-center gap-2">
                   <input type="hidden" name="id" value={r.id} />
                   <select name="stage" defaultValue={r.stage} className={field + " w-36"}>{stages.map((s) => <option key={s}>{s}</option>)}</select>
                   <button className={btn}>Update</button>
                 </form>
+                <a href={`/documents/job-application?id=${r.id}`} className={btnGhost}>Download application</a>
+                </div>
               </div>
             </div>
           );

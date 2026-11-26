@@ -132,3 +132,10 @@
 - [x] The website now generates set-password links itself and sends them in its own branded templates (no pasting into Supabase needed): selected enrollee, company welcome, admin invite, password reset. Falls back to Supabase's plain email if the mailer is not configured.
 - [ ] Vercel needs SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS (Gmail app password) for any website email to send
 - [ ] Known limit: the public "Forgot your password?" form can trigger emails to existing accounts without a throttle
+
+## Exports, downloads and shortlisting emails (done)
+- [x] Excel (.xlsx) exports with styled headers, filters and frozen header row. Admin: applications (respects filters), enrollees, all members (enrollees + companies + admins), companies, admins, jobs and job applications. Company: its own applicants.
+- [x] "Download PDF" (branded, same look as the emails) for every workshop application (admin) and "Download application" for every job application (company, enrollee, admin route).
+- [x] Separate shortlisting emails: workshop applicant shortlisted by admin, and job applicant shortlisted by a company.
+- [ ] PDFs use standard fonts, so non-Latin characters (for example Kannada or Hindi names) show as "?"
+- [ ] `npm audit` reports 2 moderate issues inside the Excel library; it is only used to create files, never to read uploads

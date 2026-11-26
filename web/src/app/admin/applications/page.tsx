@@ -25,7 +25,7 @@ export default async function Applications({ searchParams }: PageProps<"/admin/a
     <>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-3xl font-semibold tracking-tight">Applications</h1>
-        <a href={`/admin/applications/export?${exportQs}`} className={btnGhost}>Export CSV</a>
+        <a href={`/admin/export?type=applications&${exportQs}`} className={btnGhost}>Export Excel</a>
       </div>
       <Notice ok={sp.ok} err={sp.err} />
       <form className="mb-4 flex flex-wrap gap-2">
@@ -55,15 +55,18 @@ export default async function Applications({ searchParams }: PageProps<"/admin/a
                 </td>
                 <td className={td}><span className={`rounded-full px-3 py-1 text-xs font-medium ${badge[a.status]}`}>{a.status}</span></td>
                 <td className={td}>
+                  <div className="flex flex-wrap gap-2">
+                  <a href={`/documents/application?id=${a.id}`} className={btnGhost}>Download PDF</a>
                   {a.status !== "finalized" && a.status !== "rejected" && (
-                    <div className="flex flex-wrap gap-2">
+                    <>
                       {a.status === "pending" && (
                         <form action={setApplicationStatus}><input type="hidden" name="id" value={a.id} /><input type="hidden" name="status" value="shortlisted" /><button className={btnGhost}>Shortlist</button></form>
                       )}
                       <form action={finalizeApplication}><input type="hidden" name="id" value={a.id} /><button className={btn}>Finalize</button></form>
                       <form action={setApplicationStatus}><input type="hidden" name="id" value={a.id} /><input type="hidden" name="status" value="rejected" /><button className={btnDanger}>Reject</button></form>
-                    </div>
+                    </>
                   )}
+                  </div>
                 </td>
               </tr>
             ))}
