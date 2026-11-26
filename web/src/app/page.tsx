@@ -4,6 +4,9 @@ import { loadTracks } from "@/lib/data";
 import ApplicationForm from "@/components/ApplicationForm";
 import PartnerStrip from "@/components/PartnerStrip";
 
+// Served as a cached page (fast), rebuilt at most every minute and instantly when an admin edits tracks or finalizes someone.
+export const revalidate = 60;
+
 export default async function Home() {
   const tracks = await loadTracks();
   const seatsLeft = (t: (typeof tracks)[number]) => t.seatsLeft;

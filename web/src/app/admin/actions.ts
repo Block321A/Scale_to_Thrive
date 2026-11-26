@@ -83,6 +83,7 @@ export async function finalizeApplication(f: FormData) {
     await admin.from("profiles").update({ photo_url: data.publicUrl }).eq("id", uid);
   }
   revalidatePath("/admin", "layout");
+  revalidatePath("/");
   back("/admin/applications", invited.welcomed ? "Finalized. Set-password email and congratulations email sent." : "Finalized. Set-password email sent, but the congratulations email was not (the mailer settings are missing in Vercel).", invited.welcomed);
 }
 

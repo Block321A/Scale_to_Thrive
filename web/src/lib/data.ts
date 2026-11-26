@@ -1,5 +1,5 @@
 import { tracks as staticTracks, type Track, type Handler } from "@/lib/content";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/server";
 import { supabaseConfigured } from "@/lib/supabase/env";
 
 export type LiveTrack = Track & { seatsLeft: number };
@@ -9,7 +9,7 @@ export async function loadTracks(): Promise<LiveTrack[]> {
   const fallback = staticTracks.map((t) => ({ ...t, seatsLeft: Math.max(t.seatsTotal - t.seatsFilled, 0) }));
   if (!supabaseConfigured) return fallback;
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
     const [intake, handlers] = await Promise.all([
       supabase.rpc("track_intake"),
       supabase.from("handlers").select("track_id, name, designation, org, photo_url, sort_order").order("sort_order"),
