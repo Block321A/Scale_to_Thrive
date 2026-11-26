@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Notice from "@/components/Notice";
 import { updateTrack, saveHandler, deleteHandler } from "../actions";
+import PhotoPicker from "@/components/PhotoPicker";
 import Avatar from "@/components/Avatar";
 import { field, btn, btnDanger, card } from "@/lib/ui";
 
@@ -39,9 +40,7 @@ export default async function Tracks({ searchParams }: PageProps<"/admin/tracks"
                     <input name="org" defaultValue={h.org ?? ""} className={field} placeholder="Organisation" />
                     <label className="text-xs text-muted">Order<input name="sort_order" type="number" defaultValue={h.sort_order} className={field + " mt-1"} /></label>
                     <div className="flex flex-wrap items-center gap-3 sm:col-span-5">
-                      <label className="text-sm font-medium">{h.photo_url ? "Change photo" : "Upload photo"}
-                        <input name="photo" type="file" accept="image/jpeg,image/png,image/webp" className="mt-1 block text-sm text-muted file:mr-3 file:cursor-pointer file:rounded-full file:border-0 file:bg-accent file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:opacity-90" />
-                      </label>
+                      <PhotoPicker label={h.photo_url ? "Change photo" : "Upload photo"} />
                       {h.photo_url && <label className="flex items-center gap-1 text-xs text-muted"><input type="checkbox" name="remove_photo" className="size-3.5" />Remove photo</label>}
                       <button className={btn + " ml-auto"}>Save</button>
                     </div>
@@ -56,9 +55,7 @@ export default async function Tracks({ searchParams }: PageProps<"/admin/tracks"
                 <input name="org" className={field} placeholder="Organisation" />
                 <label className="text-xs text-muted">Order<input name="sort_order" type="number" defaultValue={9} className={field + " mt-1"} /></label>
                 <div className="flex flex-wrap items-center gap-3 sm:col-span-4">
-                  <label className="text-sm font-medium">Upload photo (optional)
-                    <input name="photo" type="file" accept="image/jpeg,image/png,image/webp" className="mt-1 block text-sm text-muted file:mr-3 file:cursor-pointer file:rounded-full file:border-0 file:bg-accent file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:opacity-90" />
-                  </label>
+                  <PhotoPicker label="Upload photo (optional)" />
                   <button className={btn + " ml-auto"}>Add handler</button>
                 </div>
               </form>
