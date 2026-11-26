@@ -3,7 +3,7 @@ import PartnerStrip from "./PartnerStrip";
 export default function Footer() {
   return (
     <footer className="bg-surface text-sm text-muted">
-      <div className="mx-auto max-w-6xl px-6 py-14">
+      <div className="mx-auto max-w-6xl px-6 pb-28 pt-14 md:py-14">
         <p className="mb-6 text-xs font-semibold uppercase tracking-widest">An initiative of Anvesana TBI and PES Trust</p>
         <PartnerStrip className="sm:justify-start" />
         <hr className="my-8 border-black/10" />
