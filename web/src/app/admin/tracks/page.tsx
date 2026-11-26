@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Notice from "@/components/Notice";
 import { updateTrack, saveHandler, deleteHandler } from "../actions";
+import Avatar from "@/components/Avatar";
 import { field, btn, btnDanger, card } from "@/lib/ui";
 
 export default async function Tracks({ searchParams }: PageProps<"/admin/tracks">) {
@@ -32,10 +33,13 @@ export default async function Tracks({ searchParams }: PageProps<"/admin/tracks"
                 <div key={h.id} className="flex flex-wrap items-end gap-2">
                   <form action={saveHandler} className="flex flex-1 flex-wrap items-end gap-2">
                     <input type="hidden" name="id" value={h.id} /><input type="hidden" name="track_id" value={t.id} />
+                    <Avatar src={h.photo_url} name={h.name} size={48} />
                     <input name="name" defaultValue={h.name} required className={field + " sm:w-44"} placeholder="Name" />
                     <input name="designation" defaultValue={h.designation ?? ""} className={field + " sm:flex-1"} placeholder="Designation" />
                     <input name="org" defaultValue={h.org ?? ""} className={field + " sm:w-52"} placeholder="Organisation" />
                     <input name="sort_order" type="number" defaultValue={h.sort_order} className={field + " w-16"} title="Order" />
+                    <label className="text-xs text-muted">{h.photo_url ? "Change photo" : "Add photo"}<input name="photo" type="file" accept="image/jpeg,image/png,image/webp" className="mt-1 block w-44 text-xs" /></label>
+                    {h.photo_url && <label className="flex items-center gap-1 pb-2 text-xs text-muted"><input type="checkbox" name="remove_photo" className="size-3.5" />Remove photo</label>}
                     <button className={btn}>Save</button>
                   </form>
                   <form action={deleteHandler}><input type="hidden" name="id" value={h.id} /><button className={btnDanger}>Remove</button></form>
@@ -47,6 +51,7 @@ export default async function Tracks({ searchParams }: PageProps<"/admin/tracks"
                 <input name="designation" className={field + " sm:flex-1"} placeholder="Designation" />
                 <input name="org" className={field + " sm:w-52"} placeholder="Organisation" />
                 <input name="sort_order" type="number" defaultValue={9} className={field + " w-16"} />
+                <label className="text-xs text-muted">Photo (optional)<input name="photo" type="file" accept="image/jpeg,image/png,image/webp" className="mt-1 block w-44 text-xs" /></label>
                 <button className={btn}>Add</button>
               </form>
             </div>

@@ -26,6 +26,11 @@ export const clean = (s: string) =>
   (s ?? "").replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/[–—]/g, "-").replace(/•/g, "-").replace(/\r/g, "")
     .replace(/[^\n\x20-\x7E\xA0-\xFF]/g, "?");
 
+// Width of text as pdf-lib actually draws it: glyph by glyph, without kerning.
+// (widthOfTextAtSize applies kerning that drawText does not, which made labels touch their text.)
+export const textWidth = (font: PDFFont, text: string, size: number) =>
+  Array.from(text).reduce((n, c) => n + font.widthOfTextAtSize(c, size), 0);
+
 export function wrap(text: string, font: PDFFont, size: number, width: number): string[] {
   const out: string[] = [];
   for (const para of clean(text).split("\n")) {
@@ -33,15 +38,15 @@ export function wrap(text: string, font: PDFFont, size: number, width: number): 
     for (const word of para.split(" ")) {
       let w = word;
       // break very long words (links, emails) so they never overflow
-      while (font.widthOfTextAtSize(w, size) > width) {
+      while (textWidth(font, w, size) > width) {
         let i = w.length;
-        while (i > 1 && font.widthOfTextAtSize(w.slice(0, i), size) > width) i--;
+        while (i > 1 && textWidth(font, w.slice(0, i), size) > width) i--;
         if (line) { out.push(line); line = ""; }
         out.push(w.slice(0, i));
         w = w.slice(i);
       }
       const test = line ? `${line} ${w}` : w;
-      if (font.widthOfTextAtSize(test, size) <= width) line = test;
+      if (textWidth(font, test, size) <= width) line = test;
       else { out.push(line); line = w; }
     }
     out.push(line);

@@ -1,6 +1,6 @@
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { tracks } from "@/lib/content";
-import { clean, wrap } from "@/lib/pdf";
+import { clean, wrap, textWidth } from "@/lib/pdf";
 
 // Resume built from the student's workshop application. Plain, single column, standard fonts,
 // no images or tables, so applicant tracking systems (ATS) can read it. No logos on purpose.
@@ -135,60 +135,85 @@ export async function renderResumePdf(r: Resume): Promise<Uint8Array> {
   pdf.setAuthor(clean(r.name));
   const font = await pdf.embedFont(StandardFonts.Helvetica);
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
-  const W = 595.28, H = 841.89, M = 50, textW = W - 2 * M;
-  const INK = rgb(0.1, 0.1, 0.1), GREY = rgb(0.35, 0.35, 0.35);
+
+  // Layout: one column, real text only (no tables, images or icons), so ATS software reads it correctly.
+  const W = 595.28, H = 841.89, M = 50, TOP = 48, BOTTOM = 46, textW = W - 2 * M;
+  const SIZE = 10, LEAD = 15;            // body text and line height (1.5)
+  const NAVY = rgb(0.118, 0.227, 0.373), INK = rgb(0.13, 0.13, 0.15), GREY = rgb(0.4, 0.4, 0.43), RULE = rgb(0.84, 0.85, 0.88);
+
   let page = pdf.addPage([W, H]);
-  let y = H - M;
+  let y = H - TOP;
+  const need = (h: number) => { if (y - h < BOTTOM) { page = pdf.addPage([W, H]); y = H - TOP; } };
+  const text = (t: string, x: number, size: number, f = font, color = INK) => page.drawText(t, { x, y, size, font: f, color });
 
-  const need = (h: number) => { if (y - h < M) { page = pdf.addPage([W, H]); y = H - M; } };
-  const line = (text: string, x: number, size: number, f = font, color = INK) => { page.drawText(text, { x, y, size, font: f, color }); };
-
-  // Name and contact
-  need(40);
-  y -= 20;
-  line(clean(r.name), M, 20, bold);
-  y -= 16;
-  for (const l of wrap(r.contact.join("  |  "), font, 10, textW)) { need(14); line(l, M, 10, font, GREY); y -= 13; }
+  // ---- Name and contact ----
+  y -= 22;
+  text(clean(r.name), M, 25, bold, NAVY);
+  y -= 19;
+  for (const l of wrap(r.contact.join("   |   "), font, 9.5, textW)) { text(l, M, 9.5, font, GREY); y -= 14; }
+  y -= 4;
+  page.drawLine({ start: { x: M, y }, end: { x: W - M, y }, thickness: 1.6, color: NAVY });
   y -= 6;
 
   const heading = (t: string) => {
-    need(40);
-    y -= 8;
-    line(t.toUpperCase(), M, 11, bold);
-    y -= 4;
-    page.drawLine({ start: { x: M, y }, end: { x: W - M, y }, thickness: 0.8, color: rgb(0.2, 0.2, 0.2) });
-    y -= 14;
+    need(46);
+    y -= 26;
+    text(t.toUpperCase(), M, 10.5, bold, NAVY);
+    y -= 7;
+    page.drawLine({ start: { x: M, y }, end: { x: W - M, y }, thickness: 0.7, color: RULE });
+    page.drawLine({ start: { x: M, y }, end: { x: M + 30, y }, thickness: 2, color: NAVY });
+    y -= 6;
   };
-  const para = (t: string) => { for (const l of wrap(t, font, 10.5, textW)) { need(15); line(l, M, 10.5); y -= 14.5; } };
-  // "Label: text" with the label in bold and the text wrapped under it
-  const labelled = (label: string, text: string, bullet = false) => {
-    const prefix = bullet ? "- " : "";
-    const lab = `${prefix}${clean(label)}: `;
-    const lw = bold.widthOfTextAtSize(lab, 10.5);
-    const first = wrap(text, font, 10.5, textW - lw - 3);
-    need(15);
-    line(lab, M, 10.5, bold);
-    page.drawText(first[0] ?? "", { x: M + lw + 3, y, size: 10.5, font, color: INK });
-    y -= 14.5;
-    const rest = first.slice(1).join(" ");
-    if (rest) for (const l of wrap(rest, font, 10.5, textW - 12)) { need(15); line(l, M + 12, 10.5); y -= 14.5; }
+  const gap = (n = 4) => { y -= n; };
+
+  const para = (t: string, f = font, color = INK) => {
+    for (const l of wrap(t, f, SIZE, textW)) { need(LEAD); y -= LEAD; text(l, M, SIZE, f, color); }
+  };
+  // "Label: value". The label is bold; wrapped lines return to the left margin (or a hanging indent for bullets).
+  const labelled = (label: string, value: string, bullet = false) => {
+    const x0 = bullet ? M + 12 : M;
+    const lab = `${clean(label)}: `;
+    const lw = textWidth(bold, lab, SIZE);
+    const words = wrap(value, font, SIZE, textW - (x0 - M) - lw - 3);
+    const firstLine = words[0] ?? "";
+    const rest = wrap(words.slice(1).join(" "), font, SIZE, textW - (x0 - M)).filter(Boolean);
+    need(LEAD);
+    y -= LEAD;
+    if (bullet) page.drawCircle({ x: M + 3, y: y + 3.4, size: 1.8, color: NAVY });
+    text(lab, x0, SIZE, bold);
+    page.drawText(firstLine, { x: x0 + lw + 3, y, size: SIZE, font, color: INK });
+    for (const l of rest) { need(LEAD); y -= LEAD; text(l, x0, SIZE); }
+    gap(3);
   };
   const bullet = (t: string) => {
-    const ls = wrap(t, font, 10.5, textW - 12);
-    ls.forEach((l, i) => { need(15); if (i === 0) line("-", M, 10.5); line(l, M + 12, 10.5); y -= 14.5; });
+    wrap(t, font, SIZE, textW - 12).forEach((l, i) => { need(LEAD); y -= LEAD; if (i === 0) page.drawCircle({ x: M + 3, y: y + 3.4, size: 1.8, color: NAVY }); text(l, M + 12, SIZE); });
+    gap(2);
   };
 
   heading("Professional Summary");
+  gap(2);
   para(r.summary);
-  heading("Technical Skills");
-  r.skills.forEach(([a, b]) => labelled(a, b));
-  heading("Projects");
-  r.projects.forEach(([a, b]) => labelled(a, b, true));
-  heading("Education");
-  r.education.forEach((e) => para(e));
-  heading("Training");
-  r.training.forEach((t) => bullet(t));
-  if (r.additional.length) { heading("Additional Information"); r.additional.forEach(([a, b]) => labelled(a, b)); }
 
+  heading("Technical Skills");
+  gap(2);
+  r.skills.forEach(([a, b]) => labelled(a, b));
+
+  heading("Projects");
+  gap(2);
+  r.projects.forEach(([a, b]) => labelled(a, b, true));
+
+  heading("Education");
+  gap(2);
+  r.education.forEach((e, i) => { need(LEAD); y -= LEAD; wrap(e, i === 0 ? bold : font, SIZE + (i === 0 ? 0.5 : 0), textW).forEach((l, k) => { if (k) y -= LEAD; text(l, M, SIZE + (i === 0 ? 0.5 : 0), i === 0 ? bold : font, i === 2 ? GREY : INK); }); });
+
+  heading("Training");
+  gap(2);
+  r.training.forEach((t) => bullet(t));
+
+  if (r.additional.length) {
+    heading("Additional Information");
+    gap(2);
+    r.additional.forEach(([a, b]) => labelled(a, b));
+  }
   return pdf.save();
 }

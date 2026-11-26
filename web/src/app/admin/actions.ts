@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import sharp from "sharp";
 import { requireRole } from "@/lib/auth";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { sendEmail, mails } from "@/lib/email";
@@ -26,9 +27,32 @@ export async function updateTrack(f: FormData) {
 export async function saveHandler(f: FormData) {
   await requireRole("admin");
   const supabase = await createClient();
+  const admin = createAdminClient();
+
+  // Optional photo: validate and shrink it to a square before touching the database
+  const file = f.get("photo");
+  let photoUrl: string | null | undefined; // undefined = leave the photo as it is
+  if (file instanceof File && file.size > 0) {
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) return back("/admin/tracks", "Photo must be a JPG, PNG or WebP image.", false);
+    if (file.size > 5 * 1024 * 1024) return back("/admin/tracks", "Photo must be under 5 MB.", false);
+    try {
+      const jpg = await sharp(Buffer.from(await file.arrayBuffer())).rotate().resize(480, 480, { fit: "cover", position: "attention" }).jpeg({ quality: 85 }).toBuffer();
+      const path = `handlers/${crypto.randomUUID()}.jpg`;
+      const up = await admin.storage.from("photos").upload(path, jpg, { contentType: "image/jpeg" });
+      if (up.error) return back("/admin/tracks", "Could not upload the photo: " + up.error.message, false);
+      photoUrl = admin.storage.from("photos").getPublicUrl(path).data.publicUrl;
+    } catch {
+      return back("/admin/tracks", "That image could not be read. Try another photo.", false);
+    }
+  } else if (f.get("remove_photo") === "on") {
+    photoUrl = null;
+  }
+
   const row = { track_id: str(f, "track_id"), name: str(f, "name"), designation: str(f, "designation") || null, org: str(f, "org") || null, sort_order: Number(f.get("sort_order")) || 0 };
   const id = str(f, "id");
   const { error } = id ? await supabase.from("handlers").update(row).eq("id", id) : await supabase.from("handlers").insert(row);
+  // The same trainer usually appears on both tracks, so the photo is shared by name
+  if (!error && photoUrl !== undefined) await admin.from("handlers").update({ photo_url: photoUrl }).eq("name", row.name);
   revalidatePath("/", "layout");
   back("/admin/tracks", error ? error.message : "Handler saved", !error);
 }

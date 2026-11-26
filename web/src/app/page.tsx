@@ -2,6 +2,7 @@ import Image from "next/image";
 import { formatDate } from "@/lib/content";
 import { loadTracks } from "@/lib/data";
 import ApplicationForm from "@/components/ApplicationForm";
+import Avatar from "@/components/Avatar";
 import PartnerStrip from "@/components/PartnerStrip";
 
 // Served as a cached page (fast), rebuilt at most every minute and instantly when an admin edits tracks or finalizes someone.
@@ -10,6 +11,14 @@ export const revalidate = 60;
 export default async function Home() {
   const tracks = await loadTracks();
   const seatsLeft = (t: (typeof tracks)[number]) => t.seatsLeft;
+  // Each trainer once, even if they teach both tracks; prefer the entry that has a photo
+  const teamMap = new Map<string, (typeof tracks)[number]["handlers"][number]>();
+  for (const h of tracks.flatMap((t) => t.handlers)) {
+    const key = h.name.trim().toLowerCase();
+    const have = teamMap.get(key);
+    if (!have || (!have.photo && h.photo)) teamMap.set(key, h);
+  }
+  const team = [...teamMap.values()];
   const openTracks = tracks.filter((t) => t.applicationsOpen && t.seatsLeft > 0);
 
   return (
@@ -163,12 +172,9 @@ export default async function Home() {
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-4xl font-semibold tracking-tight md:text-5xl">Meet your trainers.</h2>
           <div className="mt-12 grid gap-8 sm:grid-cols-2">
-            {tracks[0].handlers.map((h) => (
+            {team.map((h) => (
               <div key={h.name} className="flex items-center gap-6 rounded-[28px] bg-white p-8">
-                {/* Initials until real trainer photos are provided */}
-                <div className="grid size-28 shrink-0 place-items-center rounded-full bg-navy text-3xl font-semibold text-white ring-4 ring-white shadow-[0_8px_30px_rgba(0,0,0,0.15)]" aria-hidden="true">
-                  {h.name.replace("Dr. ", "").split(" ").map((w) => w[0]).join("")}
-                </div>
+                <Avatar src={h.photo || null} name={h.name.replace(/^Dr\.?\s+/i, "")} size={112} />
                 <div>
                   <h3 className="text-xl font-semibold">{h.name}</h3>
                   <p className="mt-1 text-sm text-muted">{h.designation}</p>

@@ -28,8 +28,8 @@ export type Track = {
 };
 
 const handlers: Handler[] = [
-  { name: "Dr. Arjun U", designation: "HOD of CE · Principal VGST Project Handler", org: "PES ITM and PES Center of Excellence", photo: "/images/portrait-2.jpg" },
-  { name: "Prajwal A", designation: "VGST Project Assistant · SDE Research Analyst", org: "PES Center of Excellence", photo: "/images/portrait-1.jpg" },
+  { name: "Dr. Arjun U", designation: "HOD of CE · Principal VGST Project Handler", org: "PES ITM and PES Center of Excellence", photo: "" },
+  { name: "Prajwal A", designation: "VGST Project Assistant · SDE Research Analyst", org: "PES Center of Excellence", photo: "" },
 ];
 
 export const tracks: Track[] = [
