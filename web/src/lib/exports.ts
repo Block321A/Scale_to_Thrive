@@ -4,6 +4,8 @@ import type { SheetSpec } from "@/lib/xlsx";
 const trackName = (id: string | null | undefined) => (id === "it" ? "IT" : id === "non-it" ? "Non-IT" : "Both tracks");
 const d = (v: string | null | undefined) => (v ? new Date(v) : "");
 type Row = Record<string, unknown>;
+export const normTrack = (t: string | null | undefined): "it" | "non-it" | "" => (t === "it" || t === "non-it" ? t : "");
+const label = (t: string) => (t === "it" ? "IT" : t === "non-it" ? "Non-IT" : "");
 
 export async function applicationsSheet(supabase: SupabaseClient, f: { track?: string; status?: string; q?: string }): Promise<SheetSpec> {
   let q = supabase.from("applications").select("*").order("created_at", { ascending: false });
@@ -40,11 +42,13 @@ export async function applicationsSheet(supabase: SupabaseClient, f: { track?: s
   };
 }
 
-export async function enrolleesSheet(supabase: SupabaseClient): Promise<SheetSpec> {
-  const { data } = await supabase
+export async function enrolleesSheet(supabase: SupabaseClient, track = ""): Promise<SheetSpec> {
+  let q = supabase
     .from("enrollees")
     .select("id, track_id, college, city_state, date_of_birth, gender, career_goal, github_url, created_at, profiles(full_name, email, phone), enrollee_milestones(status)")
     .order("created_at", { ascending: false });
+  if (track) q = q.eq("track_id", track);
+  const { data } = await q;
   const rows = ((data ?? []) as unknown as Row[]).map((e) => {
     const p = (e.profiles ?? {}) as Record<string, string | null>;
     const ms = (e.enrollee_milestones ?? []) as { status: string }[];
@@ -56,7 +60,7 @@ export async function enrolleesSheet(supabase: SupabaseClient): Promise<SheetSpe
     };
   });
   return {
-    name: "Enrollees",
+    name: track ? `${label(track)} Enrollees` : "Enrollees",
     columns: [
       { header: "Full name", key: "name" }, { header: "Email", key: "email" }, { header: "Phone", key: "phone", width: 16 },
       { header: "Track", key: "track", width: 10 }, { header: "College", key: "college" }, { header: "City / state", key: "city" },
@@ -102,11 +106,39 @@ export async function adminsSheet(supabase: SupabaseClient): Promise<SheetSpec> 
   };
 }
 
+const jobApplicationColumns = [
+  { header: "Applied on", key: "applied" }, { header: "Job", key: "job", width: 32 }, { header: "Company", key: "company" },
+  { header: "Applicant", key: "name" }, { header: "Email", key: "email" }, { header: "Phone", key: "phone", width: 16 },
+  { header: "Track", key: "track", width: 10 }, { header: "College", key: "college" }, { header: "City / state", key: "city" },
+  { header: "Stage", key: "stage", width: 12 }, { header: "Note from applicant", key: "note", width: 36 },
+];
+
+// Every job application of the enrollees in one track (or all tracks when track is empty).
+export async function jobApplicationsSheet(supabase: SupabaseClient, track = ""): Promise<SheetSpec> {
+  const { data: apps } = await supabase
+    .from("job_applications")
+    .select("stage, note, created_at, jobs(title, companies(name)), enrollees(track_id, college, city_state, profiles(full_name, email, phone))")
+    .order("created_at", { ascending: false });
+  const rows = ((apps ?? []) as unknown as Row[])
+    .filter((a) => !track || ((a.enrollees ?? {}) as { track_id?: string }).track_id === track)
+    .map((a) => {
+      const j = (a.jobs ?? {}) as { title?: string; companies?: { name?: string } | null };
+      const e = (a.enrollees ?? {}) as { track_id?: string; college?: string; city_state?: string; profiles?: Record<string, string | null> };
+      const p = e.profiles ?? {};
+      return {
+        applied: d(a.created_at as string), job: j.title ?? "", company: j.companies?.name ?? "Special (admin)", name: p.full_name ?? "",
+        email: p.email ?? "", phone: p.phone ?? "", track: trackName(e.track_id), college: e.college ?? "", city: e.city_state ?? "",
+        stage: a.stage, note: a.note ?? "",
+      };
+    });
+  return { name: track ? `${label(track)} Job applications` : "Job applications", columns: jobApplicationColumns, rows };
+}
+
 export async function jobsSheets(supabase: SupabaseClient): Promise<SheetSpec[]> {
-  const [{ data: jobs }, { data: apps }] = await Promise.all([
-    supabase.from("jobs").select("title, status, is_special, track_id, location, created_at, apply_by, companies(name), job_applications(stage)").order("created_at", { ascending: false }),
-    supabase.from("job_applications").select("stage, note, created_at, jobs(title, companies(name)), enrollees(track_id, college, city_state, profiles(full_name, email, phone))").order("created_at", { ascending: false }),
-  ]);
+  const { data: jobs } = await supabase
+    .from("jobs")
+    .select("title, status, is_special, track_id, location, created_at, apply_by, companies(name), job_applications(stage)")
+    .order("created_at", { ascending: false });
   return [
     {
       name: "Jobs",
@@ -124,36 +156,19 @@ export async function jobsSheets(supabase: SupabaseClient): Promise<SheetSpec[]>
         };
       }),
     },
-    {
-      name: "Job applications",
-      columns: [
-        { header: "Applied on", key: "applied" }, { header: "Job", key: "job", width: 32 }, { header: "Company", key: "company" },
-        { header: "Applicant", key: "name" }, { header: "Email", key: "email" }, { header: "Phone", key: "phone", width: 16 },
-        { header: "Track", key: "track", width: 10 }, { header: "College", key: "college" }, { header: "City / state", key: "city" },
-        { header: "Stage", key: "stage", width: 12 }, { header: "Note from applicant", key: "note", width: 36 },
-      ],
-      rows: ((apps ?? []) as unknown as Row[]).map((a) => {
-        const j = (a.jobs ?? {}) as { title?: string; companies?: { name?: string } | null };
-        const e = (a.enrollees ?? {}) as { track_id?: string; college?: string; city_state?: string; profiles?: Record<string, string | null> };
-        const p = e.profiles ?? {};
-        return {
-          applied: d(a.created_at as string), job: j.title ?? "", company: j.companies?.name ?? "Special (admin)", name: p.full_name ?? "",
-          email: p.email ?? "", phone: p.phone ?? "", track: trackName(e.track_id), college: e.college ?? "", city: e.city_state ?? "",
-          stage: a.stage, note: a.note ?? "",
-        };
-      }),
-    },
+    await jobApplicationsSheet(supabase),
   ];
 }
 
 // A company's own applicants (row level security limits the query to what the company may see).
-export async function companyApplicantsSheet(supabase: SupabaseClient, companyId: string): Promise<SheetSpec> {
+export async function companyApplicantsSheet(supabase: SupabaseClient, companyId: string, track = ""): Promise<SheetSpec> {
   const { data } = await supabase
     .from("job_applications")
     .select("stage, note, created_at, jobs(title, company_id), enrollees(track_id, college, city_state, career_goal, github_url, profiles(full_name, email, phone))")
     .order("created_at", { ascending: false });
   const rows = ((data ?? []) as unknown as Row[])
     .filter((a) => ((a.jobs ?? {}) as { company_id?: string }).company_id === companyId)
+    .filter((a) => !track || ((a.enrollees ?? {}) as { track_id?: string }).track_id === track)
     .map((a) => {
       const e = (a.enrollees ?? {}) as { track_id?: string; college?: string; city_state?: string; career_goal?: string; github_url?: string; profiles?: Record<string, string | null> };
       const p = e.profiles ?? {};
@@ -164,7 +179,7 @@ export async function companyApplicantsSheet(supabase: SupabaseClient, companyId
       };
     });
   return {
-    name: "Applicants",
+    name: track ? `${label(track)} Applicants` : "Applicants",
     columns: [
       { header: "Applied on", key: "applied" }, { header: "Job", key: "job", width: 32 }, { header: "Applicant", key: "name" },
       { header: "Email", key: "email" }, { header: "Phone", key: "phone", width: 16 }, { header: "Track", key: "track", width: 10 },

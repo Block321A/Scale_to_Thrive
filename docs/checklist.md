@@ -139,3 +139,8 @@
 - [x] Separate shortlisting emails: workshop applicant shortlisted by admin, and job applicant shortlisted by a company.
 - [ ] PDFs use standard fonts, so non-Latin characters (for example Kannada or Hindi names) show as "?"
 - [ ] `npm audit` reports 2 moderate issues inside the Excel library; it is only used to create files, never to read uploads
+
+## Category exports and student resume (done)
+- [x] Separate one-click Excel exports for IT and Non-IT: enrollees, job applications (admin) and applicants (company)
+- [x] Student resume: ATS-friendly PDF (single column, standard fonts, no logos) built from the workshop application, with the skills of the enrolled track and completed modules. Profile shows an ATS score out of 100 with tips.
+- [ ] Degree, branch and graduation year are not collected in the application, so the resume says "B.E. / B.Tech" only

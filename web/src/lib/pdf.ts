@@ -21,11 +21,11 @@ const W = 595.28, H = 841.89, M = 48;
 const FOOTER_H = 90;
 
 // Standard PDF fonts only cover Latin characters; anything else becomes "?".
-const clean = (s: string) =>
+export const clean = (s: string) =>
   (s ?? "").replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/[–—]/g, "-").replace(/•/g, "-").replace(/\r/g, "")
     .replace(/[^\n\x20-\x7E\xA0-\xFF]/g, "?");
 
-function wrap(text: string, font: PDFFont, size: number, width: number): string[] {
+export function wrap(text: string, font: PDFFont, size: number, width: number): string[] {
   const out: string[] = [];
   for (const para of clean(text).split("\n")) {
     let line = "";

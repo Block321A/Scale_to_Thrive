@@ -18,7 +18,8 @@ export default async function Enrollees({ searchParams }: PageProps<"/admin/enro
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-3xl font-semibold tracking-tight">Enrollees</h1>
         <div className="flex flex-wrap gap-2">
-          <a href="/admin/export?type=enrollees" className={btnGhost}>Export enrollees (Excel)</a>
+          <a href="/admin/export?type=enrollees&track=it" className={btn}>Export IT enrollees (Excel)</a>
+          <a href="/admin/export?type=enrollees&track=non-it" className={btn}>Export Non-IT enrollees (Excel)</a>
           <a href="/admin/export?type=members" className={btnGhost}>Export all members (Excel)</a>
         </div>
       </div>

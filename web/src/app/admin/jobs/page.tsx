@@ -25,7 +25,11 @@ export default async function Jobs({ searchParams }: PageProps<"/admin/jobs">) {
     <>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-3xl font-semibold tracking-tight">Jobs</h1>
-        <a href="/admin/export?type=jobs" className={btnGhost}>Export Excel (jobs and applications)</a>
+        <div className="flex flex-wrap gap-2">
+          <a href="/admin/export?type=job-applications&track=it" className={btn}>Export IT job applications (Excel)</a>
+          <a href="/admin/export?type=job-applications&track=non-it" className={btn}>Export Non-IT job applications (Excel)</a>
+          <a href="/admin/export?type=jobs" className={btnGhost}>Export jobs and all applications</a>
+        </div>
       </div>
       <Notice ok={sp.ok} err={sp.err} />
       <div className="mb-8 grid gap-4 sm:grid-cols-2">

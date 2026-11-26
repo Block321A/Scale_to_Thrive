@@ -27,7 +27,11 @@ export default async function Applicants({ searchParams }: PageProps<"/company/a
     <>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-3xl font-semibold tracking-tight">Applicants</h1>
-        <a href="/company/export" className={btnGhost}>Export Excel</a>
+        <div className="flex flex-wrap gap-2">
+          <a href="/company/export?track=it" className={btn}>Export IT applicants (Excel)</a>
+          <a href="/company/export?track=non-it" className={btn}>Export Non-IT applicants (Excel)</a>
+          <a href="/company/export" className={btnGhost}>Export all</a>
+        </div>
       </div>
       <Notice ok={sp.ok} err={sp.err} />
       <div className="space-y-4">
