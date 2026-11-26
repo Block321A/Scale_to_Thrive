@@ -120,36 +120,6 @@ export function companyWelcome(baseUrl: string, company: string): Mail {
   });
 }
 
-export function adminInvite(baseUrl: string, link: string): Mail {
-  return build("You are invited as a Scale to Thrive admin", {
-    baseUrl,
-    preheader: "Set your password to start managing the Scale to Thrive program.",
-    eyebrow: "Admin invitation",
-    title: "You are invited as an admin",
-    paragraphs: [
-      "You have been added as an administrator of the <strong>Scale to Thrive</strong> platform.",
-      "As an admin you can manage workshop tracks, review and finalize applications, track enrollees, post jobs and add hiring companies. All admins have the same access.",
-    ],
-    cta: { label: "Set my password", url: link },
-    note: linkNote,
-  });
-}
-
-export function passwordReset(baseUrl: string, name: string, link: string): Mail {
-  return build("Reset your Scale to Thrive password", {
-    baseUrl,
-    preheader: "Use this link to choose a new password.",
-    eyebrow: "Password reset",
-    title: "Choose a new password",
-    paragraphs: [
-      `${name ? `Hi ${esc(name.split(" ")[0])}, w` : "W"}e received a request to set a new password for your Scale to Thrive account. Use the button below to choose one.`,
-    ],
-    cta: { label: "Set a new password", url: link },
-    note: "If you did not ask for this, you can safely ignore this email. Your password will not change.",
-    showAbout: false,
-  });
-}
-
 // ---------- Shortlisting emails (separate from the final selection) ----------
 
 export function applicationShortlisted(baseUrl: string, name: string, track: string): Mail {
@@ -178,5 +148,15 @@ export function jobShortlisted(baseUrl: string, name: string, job: string, compa
       "<strong>What happens next</strong><br>&bull; The company may contact you by email or phone, so keep both handy.<br>&bull; Prepare by revisiting your workshop projects and being ready to explain your problem, approach, code and outcome.<br>&bull; We will email you again when the company moves you to the next stage.",
     ],
     cta: { label: "View my applications", url: `${baseUrl}/profile` },
+  });
+}
+
+export function testEmail(baseUrl: string): Mail {
+  return build("Scale to Thrive test email", {
+    baseUrl,
+    preheader: "Your email settings work.",
+    eyebrow: "Email settings",
+    title: "Your email settings work",
+    paragraphs: ["This is a test message from the Scale to Thrive admin panel. If you can read it, the website can send emails to applicants, students and companies."],
   });
 }
