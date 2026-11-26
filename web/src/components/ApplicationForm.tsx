@@ -3,12 +3,14 @@
 import { useActionState, useState } from "react";
 import type { Track } from "@/lib/content";
 import { submitApplication, type ApplyState } from "@/app/actions/apply";
+import { EDUCATION_LEVELS, EDUCATION_STATUS, passOutYears } from "@/lib/education";
 
 const input = "w-full rounded-xl border border-black/15 bg-white px-4 py-3 text-base outline-none focus:border-accent focus:ring-2 focus:ring-accent/20";
 const label = "mb-1.5 block text-sm font-medium";
 
 export default function ApplicationForm({ openTracks }: { openTracks: Track[] }) {
   const [trackId, setTrackId] = useState(openTracks[0]?.id ?? "it");
+  const [eduStatus, setEduStatus] = useState<string>("studying");
   const [state, action, pending] = useActionState<ApplyState, FormData>(submitApplication, { ok: false, message: "" });
 
   if (state.ok) {
@@ -47,9 +49,34 @@ export default function ApplicationForm({ openTracks }: { openTracks: Track[] })
         <div><label className={label}>City / state</label><input name="city" className={input} /></div>
       </fieldset>
 
-      <fieldset>
+      <fieldset className="grid gap-4 sm:grid-cols-2">
         <legend className="mb-3 text-lg font-semibold">3. Education</legend>
-        <label className={label}>College / institution *</label><input name="college" required className={input} />
+        <div className="sm:col-span-2"><label className={label}>College / institution *</label><input name="college" required className={input} /></div>
+        <div>
+          <label className={label}>Highest education *</label>
+          <select name="education_level" required defaultValue="" className={input}>
+            <option value="" disabled>Select</option>
+            {EDUCATION_LEVELS.map((l) => <option key={l}>{l}</option>)}
+          </select>
+        </div>
+        <div><label className={label}>Branch / specialization *</label><input name="branch" required placeholder="e.g. Computer Science" className={input} /></div>
+        <div className="sm:col-span-2">
+          <span className={label}>Education status *</span>
+          <div className="flex flex-wrap gap-3">
+            {EDUCATION_STATUS.map((s) => (
+              <label key={s.value} className={`cursor-pointer rounded-xl border px-4 py-2.5 text-sm ${eduStatus === s.value ? "border-accent bg-white" : "border-black/10 bg-white/60"}`}>
+                <input type="radio" name="education_status" value={s.value} required checked={eduStatus === s.value} onChange={() => setEduStatus(s.value)} className="mr-2" />{s.label}
+              </label>
+            ))}
+          </div>
+        </div>
+        <div>
+          <label className={label}>{eduStatus === "completed" ? "Year you passed out *" : "Expected year of passing out *"}</label>
+          <select key={eduStatus} name="passout_year" required defaultValue="" className={input}>
+            <option value="" disabled>Select year</option>
+            {passOutYears(eduStatus).map((y) => <option key={y}>{y}</option>)}
+          </select>
+        </div>
       </fieldset>
 
       <fieldset className="grid gap-4 sm:grid-cols-2">

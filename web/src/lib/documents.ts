@@ -21,7 +21,11 @@ export function workshopApplicationSpec(a: A): PdfSpec {
       { heading: "Applicant", rows: [
         ["Full name", String(a.full_name ?? "")], ["Email", String(a.email ?? "")], ["Phone / WhatsApp", String(a.phone ?? "")],
         ["Date of birth", day(a.date_of_birth as string)], ["Gender", String(a.gender ?? "")], ["City / state", String(a.city_state ?? "")],
-        ["College / institution", String(a.college ?? "")],
+      ] },
+      { heading: "Education", rows: [
+        ["College / institution", String(a.college ?? "")], ["Highest education", ans.education_level ?? ""], ["Branch / specialization", ans.branch ?? ""],
+        ["Education status", ans.education_status === "completed" ? "Completed (passed out)" : ans.education_status === "studying" ? "Currently studying" : ""],
+        [ans.education_status === "completed" ? "Year of passing out" : "Expected year of passing out", ans.passout_year ?? ""],
       ] },
       { heading: "Experience", rows: it
         ? [["Programming experience", cap(ans.experience)], ["Languages and tools", ans.tools ?? ""], ["GitHub profile", ans.github_url ?? ""]]

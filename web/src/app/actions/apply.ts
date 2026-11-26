@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { sendEmail, mails } from "@/lib/email";
 import { supabaseConfigured } from "@/lib/supabase/env";
+import { validateEducation } from "@/lib/education";
 
 export type ApplyState = { ok: boolean; message: string };
 
@@ -25,6 +26,13 @@ export async function submitApplication(_: ApplyState, formData: FormData): Prom
     return path;
   };
 
+  const edu = {
+    level: clean(formData.get("education_level")), branch: clean(formData.get("branch")),
+    status: clean(formData.get("education_status")), year: clean(formData.get("passout_year")),
+  };
+  const eduError = validateEducation(edu);
+  if (eduError) return { ok: false, message: eduError };
+
   let resume: string | null = null;
   let photo: string | null = null;
   try {
@@ -36,6 +44,7 @@ export async function submitApplication(_: ApplyState, formData: FormData): Prom
 
   const answers: Record<string, string | null> = {};
   for (const k of ["experience", "github_url", "tools", "english", "career_area"]) answers[k] = clean(formData.get(k));
+  answers.education_level = edu.level; answers.branch = edu.branch; answers.education_status = edu.status; answers.passout_year = edu.year;
 
   const name = String(formData.get("full_name")).trim();
   const email = String(formData.get("email")).trim();

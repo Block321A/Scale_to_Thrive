@@ -45,7 +45,7 @@ export default async function Applications({ searchParams }: PageProps<"/admin/a
                 <td className={td + " max-w-xs"}>
                   <details><summary className="cursor-pointer text-accent">View</summary>
                     <div className="mt-2 space-y-1 text-muted">
-                      <p>College: {a.college}</p><p>City: {a.city_state ?? "-"}</p>
+                      <p>College: {a.college}</p><p>Education: {a.answers?.education_level ?? "-"}{a.answers?.branch ? `, ${a.answers.branch}` : ""} ({a.answers?.education_status === "completed" ? "passed out" : "studying"} {a.answers?.passout_year ?? ""})</p><p>City: {a.city_state ?? "-"}</p>
                       <p>Why: {a.reason}</p><p>Goal: {a.career_goal ?? "-"}</p>
                       <p>Answers: {Object.entries(a.answers ?? {}).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join(", ") || "-"}</p>
                       <p>Heard from: {a.heard_from ?? "-"}</p>

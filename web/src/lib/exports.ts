@@ -21,7 +21,8 @@ export async function applicationsSheet(supabase: SupabaseClient, f: { track?: s
     return {
       applied: d(a.created_at as string), track: trackName(a.track_id as string), status: a.status,
       name: a.full_name, email: a.email, phone: a.phone, gender: a.gender ?? "", dob: d(a.date_of_birth as string),
-      city: a.city_state ?? "", college: a.college, experience: ans.experience ?? "", github: ans.github_url ?? "",
+      city: a.city_state ?? "", college: a.college, level: ans.education_level ?? "", branch: ans.branch ?? "",
+      eduStatus: ans.education_status === "completed" ? "Completed" : ans.education_status === "studying" ? "Studying" : "", passout: ans.passout_year ?? "", experience: ans.experience ?? "", github: ans.github_url ?? "",
       tools: ans.tools ?? "", english: ans.english ?? "", area: ans.career_area ?? "",
       reason: a.reason, goal: a.career_goal ?? "", heard: a.heard_from ?? "",
       resume: a.resume_path ? "Yes" : "No", reviewed: d(a.reviewed_at as string),
@@ -33,7 +34,9 @@ export async function applicationsSheet(supabase: SupabaseClient, f: { track?: s
       { header: "Applied on", key: "applied" }, { header: "Track", key: "track", width: 10 }, { header: "Status", key: "status", width: 12 },
       { header: "Full name", key: "name" }, { header: "Email", key: "email" }, { header: "Phone", key: "phone", width: 16 },
       { header: "Gender", key: "gender", width: 12 }, { header: "Date of birth", key: "dob", width: 14 }, { header: "City / state", key: "city" },
-      { header: "College", key: "college" }, { header: "Experience level", key: "experience", width: 16 }, { header: "GitHub", key: "github" },
+      { header: "College", key: "college" }, { header: "Highest education", key: "level", width: 18 }, { header: "Branch", key: "branch", width: 26 },
+      { header: "Education status", key: "eduStatus", width: 14 }, { header: "Year of passing out", key: "passout", width: 14 },
+      { header: "Experience level", key: "experience", width: 16 }, { header: "GitHub", key: "github" },
       { header: "Languages / tools", key: "tools" }, { header: "English level", key: "english", width: 14 }, { header: "Career area", key: "area" },
       { header: "Why they want to join", key: "reason", width: 48 }, { header: "Career goal", key: "goal", width: 36 },
       { header: "Heard about us from", key: "heard", width: 18 }, { header: "Resume uploaded", key: "resume", width: 12 }, { header: "Reviewed on", key: "reviewed" },
@@ -45,16 +48,18 @@ export async function applicationsSheet(supabase: SupabaseClient, f: { track?: s
 export async function enrolleesSheet(supabase: SupabaseClient, track = ""): Promise<SheetSpec> {
   let q = supabase
     .from("enrollees")
-    .select("id, track_id, college, city_state, date_of_birth, gender, career_goal, github_url, created_at, profiles(full_name, email, phone), enrollee_milestones(status)")
+    .select("id, track_id, college, city_state, date_of_birth, gender, career_goal, github_url, details, created_at, profiles(full_name, email, phone), enrollee_milestones(status)")
     .order("created_at", { ascending: false });
   if (track) q = q.eq("track_id", track);
   const { data } = await q;
   const rows = ((data ?? []) as unknown as Row[]).map((e) => {
     const p = (e.profiles ?? {}) as Record<string, string | null>;
     const ms = (e.enrollee_milestones ?? []) as { status: string }[];
+    const det = (e.details ?? {}) as Record<string, string | null>;
     return {
       name: p.full_name ?? "", email: p.email ?? "", phone: p.phone ?? "", track: trackName(e.track_id as string),
-      college: e.college, city: e.city_state ?? "", dob: d(e.date_of_birth as string), gender: e.gender ?? "",
+      college: e.college, level: det.education_level ?? "", branch: det.branch ?? "", passout: det.passout_year ?? "",
+      eduStatus: det.education_status === "completed" ? "Completed" : det.education_status === "studying" ? "Studying" : "", city: e.city_state ?? "", dob: d(e.date_of_birth as string), gender: e.gender ?? "",
       goal: e.career_goal ?? "", github: e.github_url ?? "", done: `${ms.filter((m) => m.status === "completed").length} of 12`,
       joined: d(e.created_at as string),
     };
@@ -63,8 +68,10 @@ export async function enrolleesSheet(supabase: SupabaseClient, track = ""): Prom
     name: track ? `${label(track)} Enrollees` : "Enrollees",
     columns: [
       { header: "Full name", key: "name" }, { header: "Email", key: "email" }, { header: "Phone", key: "phone", width: 16 },
-      { header: "Track", key: "track", width: 10 }, { header: "College", key: "college" }, { header: "City / state", key: "city" },
-      { header: "Date of birth", key: "dob", width: 14 }, { header: "Gender", key: "gender", width: 12 },
+      { header: "Track", key: "track", width: 10 }, { header: "College", key: "college" },
+      { header: "Highest education", key: "level", width: 18 }, { header: "Branch", key: "branch", width: 26 },
+      { header: "Education status", key: "eduStatus", width: 14 }, { header: "Year of passing out", key: "passout", width: 14 },
+      { header: "City / state", key: "city" }, { header: "Date of birth", key: "dob", width: 14 }, { header: "Gender", key: "gender", width: 12 },
       { header: "Career goal", key: "goal", width: 36 }, { header: "GitHub", key: "github" },
       { header: "Milestones completed", key: "done", width: 20 }, { header: "Joined on", key: "joined" },
     ],

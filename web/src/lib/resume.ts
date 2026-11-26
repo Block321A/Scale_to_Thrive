@@ -54,11 +54,16 @@ export function buildResume(i: ResumeInput): Resume {
   const it = i.track === "it";
   const roles = nice(t.roles.slice(0, 3));
   const exp = i.details.experience ? `${cap(i.details.experience)} ${it ? "programming" : "Excel"} foundation. ` : "";
+  const lvl = i.details.education_level ?? "";
+  const branch = i.details.branch ?? "";
+  const status = i.details.education_status ?? "";
+  const year = i.details.passout_year ?? "";
+  const who = status === "completed" ? "Engineering graduate" : status === "studying" ? "Engineering student" : "Engineering candidate";
   const goal = i.goal && i.goal.trim().length >= 3 ? ` Career objective: ${i.goal.trim().replace(/\.$/, "")}.` : "";
   const area = !it && i.details.career_area ? ` Interested in ${i.details.career_area} roles.` : "";
   const summary = it
-    ? `Engineering graduate and Scale to Thrive IT-track trainee with hands-on training in Linux administration, Shell scripting, Python automation, REST APIs and PostgreSQL. ${exp}Seeking an entry-level role such as ${roles}.${goal}`
-    : `Engineering graduate and Scale to Thrive Non-IT-track trainee with hands-on training in Advanced Excel, MIS reporting, dashboards, Power Query and business communication. ${exp}Seeking an entry-level role such as ${roles}.${area}${goal}`;
+    ? `${who} and Scale to Thrive IT-track trainee with hands-on training in Linux administration, Shell scripting, Python automation, REST APIs and PostgreSQL. ${exp}Seeking an entry-level role such as ${roles}.${goal}`
+    : `${who} and Scale to Thrive Non-IT-track trainee with hands-on training in Advanced Excel, MIS reporting, dashboards, Power Query and business communication. ${exp}Seeking an entry-level role such as ${roles}.${area}${goal}`;
 
   const skills = [...SKILL_GROUPS[i.track]];
   if (it && i.details.tools?.trim()) skills.push(["Additional tools (self-reported)", i.details.tools.trim()]);
@@ -81,7 +86,11 @@ export function buildResume(i: ResumeInput): Resume {
     summary,
     skills,
     projects: t.projects.map((p) => [p.title, p.text]),
-    education: ["Bachelor of Engineering / Technology (B.E. / B.Tech)", `${i.college}${i.city ? `, ${i.city}` : ""}`],
+    education: [
+      lvl ? `${lvl}${branch ? ` in ${branch}` : ""}` : "Bachelor of Engineering / Technology (B.E. / B.Tech)",
+      `${i.college}${i.city ? `, ${i.city}` : ""}`,
+      ...(year ? [status === "completed" ? `Graduated: ${year}` : `Expected graduation: ${year}`] : []),
+    ],
     training,
     additional,
   };
@@ -103,7 +112,12 @@ export function scoreResume(i: ResumeInput, r: Resume): { score: number; label: 
     { name: "Professional summary", got: 10, max: 10 },
     { name: "Career objective in your own words", got: hasGoal ? 5 : 0, max: 5, tip: hasGoal ? undefined : "Write a clear career goal (at least one full sentence)." },
     { name: "Skills section with relevant keywords", got: Math.round(20 * Math.min(skillCount, 25) / 25), max: 20, tip: skillCount < 25 ? "Add the languages and tools you know in your profile." : undefined },
-    { name: "Education", got: i.college ? 10 : 0, max: 10, tip: i.college ? undefined : "Add your college name." },
+    {
+      name: "Education (college, degree, branch, passing-out year)",
+      got: (i.college ? 4 : 0) + (i.details.education_level && i.details.branch ? 3 : 0) + (i.details.passout_year ? 3 : 0),
+      max: 10,
+      tip: i.details.education_level && i.details.passout_year ? undefined : "Your application did not include your highest education and passing-out year. Ask the Scale to Thrive team to add them.",
+    },
     { name: "Projects", got: Math.round(10 * Math.min(r.projects.length, 3) / 3), max: 10 },
     { name: "Training progress", got: Math.round(10 * done / 12), max: 10, tip: done < 12 ? `Complete more weekly modules (${done} of 12 done). Your resume lists every module you complete.` : undefined },
     it
