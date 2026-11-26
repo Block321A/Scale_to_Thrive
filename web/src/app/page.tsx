@@ -52,7 +52,7 @@ export default async function Home() {
       </section>
 
       {/* Mobile quick links (like Fabric's in-page jump bar), sticks under the header */}
-      <nav aria-label="On this page" className="sticky top-[calc(3vh+67px)] z-40 border-y border-black/5 bg-white md:hidden">
+      <nav aria-label="On this page" className="sticky top-[calc(1.5vh+67px)] z-40 border-y border-black/5 bg-white md:hidden">
         <ul className="flex gap-2 overflow-x-auto px-4 py-2.5 text-sm font-medium [scrollbar-width:none]">
           {[["#tracks", "Chariots"], ["#curriculum", "Curriculum"], ["#projects", "Projects"], ["#careers", "Careers"], ["#team", "Trainers"], ["#apply", "Apply"]].map(([h, l]) => (
             <li key={h}><a href={h} className="block whitespace-nowrap rounded-full bg-surface px-4 py-2">{l}</a></li>
@@ -87,7 +87,7 @@ export default async function Home() {
       </section>
 
       {/* Tracks */}
-      <section id="tracks" className="mx-auto max-w-6xl scroll-mt-[calc(8rem+3vh)] px-5 py-14 md:scroll-mt-[calc(5rem+3vh)] md:px-6 md:py-24">
+      <section id="tracks" className="mx-auto max-w-6xl scroll-mt-[calc(8rem+1.5vh)] px-5 py-14 md:scroll-mt-[calc(5rem+1.5vh)] md:px-6 md:py-24">
         <h2 className="max-w-3xl text-[2rem] font-semibold leading-tight tracking-tight md:text-6xl">One stop skill enhancement for your life&apos;s future ventures</h2>
         <p className="mt-4 max-w-2xl text-lg text-muted md:mt-5 md:text-xl">
           Both build technical skill. The Non-IT track adds a weekly communication module for business and corporate roles.
@@ -141,7 +141,7 @@ export default async function Home() {
       </section>
 
       {/* Curriculum */}
-      <section id="curriculum" className="mx-auto max-w-6xl scroll-mt-[calc(8rem+3vh)] px-5 py-14 md:scroll-mt-[calc(5rem+3vh)] md:px-6 md:py-24">
+      <section id="curriculum" className="mx-auto max-w-6xl scroll-mt-[calc(8rem+1.5vh)] px-5 py-14 md:scroll-mt-[calc(5rem+1.5vh)] md:px-6 md:py-24">
         <h2 className="text-[2rem] font-semibold leading-tight tracking-tight md:text-5xl">Twelve weeks, week by week.</h2>
         <TrackTabs labels={tracks.map((t) => t.name)}>
           {tracks.map((t) => (
@@ -167,7 +167,7 @@ export default async function Home() {
       </section>
 
       {/* Projects + assessment */}
-      <section id="projects" className="scroll-mt-[calc(8rem+3vh)] bg-surface py-14 md:scroll-mt-[calc(5rem+3vh)] md:py-24">
+      <section id="projects" className="scroll-mt-[calc(8rem+1.5vh)] bg-surface py-14 md:scroll-mt-[calc(5rem+1.5vh)] md:py-24">
         <div className="mx-auto max-w-6xl px-5 md:px-6">
           <h2 className="text-[2rem] font-semibold leading-tight tracking-tight md:text-5xl">Build projects you can talk about.</h2>
           <TrackTabs labels={tracks.map((t) => t.name)}>
@@ -192,7 +192,7 @@ export default async function Home() {
       </section>
 
       {/* Careers */}
-      <section id="careers" className="mx-auto max-w-6xl scroll-mt-[calc(8rem+3vh)] px-5 py-14 md:scroll-mt-[calc(5rem+3vh)] md:px-6 md:py-24">
+      <section id="careers" className="mx-auto max-w-6xl scroll-mt-[calc(8rem+1.5vh)] px-5 py-14 md:scroll-mt-[calc(5rem+1.5vh)] md:px-6 md:py-24">
         <h2 className="text-[2rem] font-semibold leading-tight tracking-tight md:text-5xl">Roles you can aim for.</h2>
         <p className="mt-4 max-w-2xl text-lg text-muted">Target entry-level roles, not guaranteed placements. Hiring requirements vary by employer.</p>
         <TrackTabs labels={tracks.map((t) => t.name)}>
@@ -206,7 +206,7 @@ export default async function Home() {
       </section>
 
       {/* Team */}
-      <section id="team" className="scroll-mt-[calc(8rem+3vh)] bg-surface py-14 md:scroll-mt-[calc(5rem+3vh)] md:py-24">
+      <section id="team" className="scroll-mt-[calc(8rem+1.5vh)] bg-surface py-14 md:scroll-mt-[calc(5rem+1.5vh)] md:py-24">
         <div className="mx-auto max-w-6xl px-5 md:px-6">
           <h2 className="text-[2rem] font-semibold leading-tight tracking-tight md:text-5xl">Meet your trainers.</h2>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 md:mt-12 md:gap-8">
@@ -226,7 +226,7 @@ export default async function Home() {
       </section>
 
       {/* Application (shown only while an admin keeps applications open) */}
-      <section id="apply" className="mx-auto max-w-3xl scroll-mt-[calc(8rem+3vh)] px-5 py-14 md:scroll-mt-[calc(5rem+3vh)] md:px-6 md:py-24">
+      <section id="apply" className="mx-auto max-w-3xl scroll-mt-[calc(8rem+1.5vh)] px-5 py-14 md:scroll-mt-[calc(5rem+1.5vh)] md:px-6 md:py-24">
         <h2 className="text-[2rem] font-semibold leading-tight tracking-tight md:text-5xl">Apply for the chariot.</h2>
         {openTracks.length > 0 ? (
           <div className="mt-10"><ApplicationForm openTracks={openTracks} /></div>

@@ -37,7 +37,7 @@ export default function Nav() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-black/5 bg-white">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 pb-2 pt-[3vh] sm:px-6">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 pb-2 pt-[1.5vh] sm:px-6">
         <Link href="/" aria-label="Scale to Thrive home" onClick={() => setOpen(false)}><Logo compact /></Link>
 
         <ul className="hidden items-center gap-8 text-sm text-foreground/80 md:flex">
