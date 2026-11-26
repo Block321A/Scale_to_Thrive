@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import type { Session } from "@supabase/supabase-js";
+import { usePathname } from "next/navigation";
+import { useState, useSyncExternalStore } from "react";
 import Logo from "./Logo";
-import { createClient } from "@/lib/supabase/client";
+import { readSessionName } from "@/lib/auth-cookie";
 
 const links = [
   ["/#tracks", "Workshops"],
@@ -14,24 +14,20 @@ const links = [
   ["/jobs", "Jobs"],
 ] as const;
 
-type Who = { name: string } | null;
+const LOADING = "\u0000loading";
+const subscribe = (cb: () => void) => {
+  // re-check when the tab regains focus (sign-in or sign-out in another tab)
+  window.addEventListener("focus", cb);
+  document.addEventListener("visibilitychange", cb);
+  return () => { window.removeEventListener("focus", cb); document.removeEventListener("visibilitychange", cb); };
+};
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
-  // undefined = still checking, null = signed out, object = signed in.
-  // Checked in the browser so the pages themselves can stay cached and fast.
-  const configured = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL);
-  const [who, setWho] = useState<Who | undefined>(configured ? undefined : null);
-
-  useEffect(() => {
-    if (!configured) return;
-    const supabase = createClient();
-    const read = (s: Session | null) =>
-      setWho(s ? { name: (s.user.user_metadata?.full_name as string | undefined) || s.user.email || "My account" } : null);
-    supabase.auth.getSession().then(({ data }) => read(data.session));
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => read(s));
-    return () => sub.subscription.unsubscribe();
-  }, [configured]);
+  usePathname(); // re-renders on every page change, so the header notices a fresh sign-in
+  // "" = signed out, a name = signed in. Read in the browser so the pages themselves can stay cached and fast.
+  const name = useSyncExternalStore(subscribe, readSessionName, () => LOADING);
+  const who = name === LOADING ? undefined : name ? { name } : null;
 
   const signOut = (cls: string) => (
     <form action="/auth/signout" method="post" className={cls}>

@@ -16,18 +16,18 @@ export default async function Jobs({ searchParams }: PageProps<"/jobs">) {
   if (!me) redirect("/login");
   const supabase = await createClient();
   const today = new Date().toISOString().slice(0, 10);
-  const { data } = await supabase
-    .from("jobs")
-    .select("id, title, description, location, track_id, apply_by, external_url, is_special, companies(name, logo_path, description)")
-    .eq("status", "open")
-    .or(`apply_by.is.null,apply_by.gte.${today}`)
-    .order("created_at", { ascending: false });
+  // The job list and "jobs I already applied for" are requested together
+  const [{ data }, mine] = await Promise.all([
+    supabase
+      .from("jobs")
+      .select("id, title, description, location, track_id, apply_by, external_url, is_special, companies(name, logo_path, description)")
+      .eq("status", "open")
+      .or(`apply_by.is.null,apply_by.gte.${today}`)
+      .order("created_at", { ascending: false }),
+    me.role === "enrollee" ? supabase.from("job_applications").select("job_id").eq("enrollee_id", me.id) : Promise.resolve({ data: [] as { job_id: string }[] }),
+  ]);
   const jobs = (data ?? []) as unknown as Job[];
-  const applied = new Set<string>();
-  if (me?.role === "enrollee") {
-    const { data: mine } = await supabase.from("job_applications").select("job_id").eq("enrollee_id", me.id);
-    mine?.forEach((m) => applied.add(m.job_id));
-  }
+  const applied = new Set<string>((mine.data ?? []).map((m) => m.job_id));
   const logo = (p: string) => supabase.storage.from("logos").getPublicUrl(p).data.publicUrl;
   const special = jobs.filter((j) => j.is_special);
   const regular = jobs.filter((j) => !j.is_special);

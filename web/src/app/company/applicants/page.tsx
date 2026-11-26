@@ -16,12 +16,12 @@ type Row = {
 export default async function Applicants({ searchParams }: PageProps<"/company/applicants">) {
   const sp = await searchParams;
   const supabase = await createClient();
-  const myId = (await supabase.rpc("my_company_id")).data;
   const { data } = await supabase
     .from("job_applications")
     .select("id, stage, note, created_at, jobs(title, company_id), enrollees(id, track_id, college, city_state, date_of_birth, gender, career_goal, github_url, resume_path, details, profiles(full_name, email, phone, photo_url))")
     .order("created_at", { ascending: false });
-  const rows = ((data ?? []) as unknown as Row[]).filter((r) => r.jobs.company_id === myId);
+  // Row level security already limits this to applicants of this company's own jobs
+  const rows = (data ?? []) as unknown as Row[];
 
   return (
     <>

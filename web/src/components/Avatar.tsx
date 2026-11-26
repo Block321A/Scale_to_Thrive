@@ -10,7 +10,7 @@ export default function Avatar({ src, name, size = 144 }: { src?: string | null;
       style={{ width: size, height: size }}
     >
       {src ? (
-        <Image src={src} alt={`${name} profile photo`} fill sizes={`${size}px`} className="object-cover object-top" />
+        <Image src={src} alt={`${name} profile photo`} fill sizes={`${size}px`} className="object-cover object-top" unoptimized={src.startsWith("http")} />
       ) : (
         <span className="grid size-full place-items-center font-semibold text-white" style={{ fontSize: size * 0.36 }} aria-hidden="true">{initials}</span>
       )}

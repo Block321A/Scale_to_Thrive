@@ -1,9 +1,9 @@
-import sharp from "sharp";
 
 // Turns an uploaded photo (JPEG, PNG or WebP) into a small round PNG for the PDF.
 // PDF files can only embed JPEG or PNG, so WebP is converted, and large photos are shrunk.
 export async function roundPhoto(input: Buffer | ArrayBuffer | Uint8Array, size = 320): Promise<Uint8Array | null> {
   try {
+    const sharp = (await import("sharp")).default;
     const buf = Buffer.isBuffer(input) ? input : Buffer.from(input as ArrayBuffer);
     const mask = Buffer.from(`<svg width="${size}" height="${size}"><circle cx="${size / 2}" cy="${size / 2}" r="${size / 2}" fill="#fff"/></svg>`);
     const out = await sharp(buf)

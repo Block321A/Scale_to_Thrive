@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { getProfile } from "@/lib/auth";
 import Notice from "@/components/Notice";
 import { postJob, toggleJob } from "./actions";
 import { field, btn, btnGhost, card } from "@/lib/ui";
@@ -6,11 +7,12 @@ import { field, btn, btnGhost, card } from "@/lib/ui";
 export default async function CompanyHome({ searchParams }: PageProps<"/company">) {
   const sp = await searchParams;
   const supabase = await createClient();
-  const myId = (await supabase.rpc("my_company_id")).data as string | null;
+  const me = await getProfile();
+  // One query: only this company's jobs (joined to the company's login)
   const { data: jobs } = await supabase
     .from("jobs")
-    .select("id, title, location, status, track_id, apply_by, job_applications(stage)")
-    .eq("company_id", myId ?? "")
+    .select("id, title, location, status, track_id, apply_by, job_applications(stage), companies!inner(user_id)")
+    .eq("companies.user_id", me?.id ?? "")
     .order("created_at", { ascending: false });
   const own = jobs ?? [];
 

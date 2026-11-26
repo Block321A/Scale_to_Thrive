@@ -4,20 +4,22 @@ import Avatar from "@/components/Avatar";
 import { requireRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { buildResume, scoreResume } from "@/lib/resume";
-import { loadResumeInput } from "@/lib/resume-data";
+import { resumeInputFrom } from "@/lib/resume-data";
 
 const statusLabel: Record<string, string> = { completed: "Completed", in_progress: "In progress", not_started: "Not started" };
 
 export default async function Profile() {
   const me = await requireRole("enrollee");
   const supabase = await createClient();
-  const { data: enrollee } = await supabase.from("enrollees").select("track_id, college, city_state, career_goal, github_url, tracks(name)").eq("id", me.id).single();
-  const [{ data: ms }, { data: titles }, { data: apps }] = await Promise.all([
+  // One round trip: everything the page needs is requested together
+  const [{ data: enrollee }, { data: ms }, { data: allTitles }, { data: apps }] = await Promise.all([
+    supabase.from("enrollees").select("track_id, college, city_state, career_goal, github_url, details, tracks(name)").eq("id", me.id).single(),
     supabase.from("enrollee_milestones").select("week, status").eq("enrollee_id", me.id),
-    supabase.from("track_milestones").select("week, title").eq("track_id", enrollee?.track_id ?? "").order("week"),
+    supabase.from("track_milestones").select("track_id, week, title").order("week"),
     supabase.from("job_applications").select("id, stage, created_at, jobs(title, is_special, companies(name))").eq("enrollee_id", me.id).order("created_at", { ascending: false }),
   ]);
-  const resumeInput = await loadResumeInput(supabase, me);
+  const titles = (allTitles ?? []).filter((t) => t.track_id === enrollee?.track_id);
+  const resumeInput = enrollee ? resumeInputFrom(me, enrollee, (ms ?? []) as { week: number; status: string }[]) : null;
   const ats = resumeInput ? scoreResume(resumeInput, buildResume(resumeInput)) : null;
   const track = (enrollee?.tracks as unknown as { name: string } | null)?.name ?? "";
   const status = new Map((ms ?? []).map((m) => [m.week, m.status]));

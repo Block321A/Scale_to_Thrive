@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import sharp from "sharp";
 import { requireRole } from "@/lib/auth";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { sendEmail, mails } from "@/lib/email";
@@ -36,6 +35,7 @@ export async function saveHandler(f: FormData) {
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) return back("/admin/tracks", "Photo must be a JPG, PNG or WebP image.", false);
     if (file.size > 5 * 1024 * 1024) return back("/admin/tracks", "Photo must be under 5 MB.", false);
     try {
+      const sharp = (await import("sharp")).default;
       const jpg = await sharp(Buffer.from(await file.arrayBuffer())).rotate().resize(480, 480, { fit: "cover", position: "attention" }).jpeg({ quality: 85 }).toBuffer();
       const path = `handlers/${crypto.randomUUID()}.jpg`;
       const up = await admin.storage.from("photos").upload(path, jpg, { contentType: "image/jpeg" });
