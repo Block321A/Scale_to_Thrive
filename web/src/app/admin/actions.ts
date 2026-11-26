@@ -84,7 +84,7 @@ export async function finalizeApplication(f: FormData) {
     await admin.from("profiles").update({ photo_url: data.publicUrl }).eq("id", uid);
   }
   revalidatePath("/admin", "layout");
-  back("/admin/applications", invited.emailed ? "Finalized. Set-password email sent." : "Finalized, but the email could not be sent. Use Resend on the Enrollees page.", invited.emailed);
+  back("/admin/applications", invited.welcomed ? "Finalized. Set-password email and congratulations email sent." : "Finalized. Set-password email sent, but the congratulations email was not (the mailer settings are missing in Vercel).", invited.welcomed);
 }
 
 // ---- Enrollees -----------------------------------------------------------
@@ -125,7 +125,7 @@ export async function createCompany(f: FormData) {
   }
   const { error } = await admin.from("companies").insert({ user_id: uid, name, email, description: str(f, "description") || null, logo_path, created_by: me.id });
   if (error) return back("/admin/companies", error.message, false);
-  back("/admin/companies", invited.emailed ? "Company created. Set-password email sent." : "Company created, but the email could not be sent. Use Resend on its card.", invited.emailed);
+  back("/admin/companies", invited.welcomed ? "Company created. Set-password email and welcome email sent." : "Company created. Set-password email sent, but the welcome email was not (the mailer settings are missing in Vercel).", invited.welcomed);
 }
 
 // ---- Admin-posted "Special" jobs ----------------------------------------

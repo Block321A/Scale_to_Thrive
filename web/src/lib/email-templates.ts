@@ -80,35 +80,43 @@ export function jobStage(baseUrl: string, name: string, job: string, company: st
 
 const linkNote = "This link works once and expires after a short time. If it has expired, ask the Scale to Thrive team to send a new one, or use &quot;Forgot your password?&quot; on the sign-in page. Please do not forward this email.";
 
-export function enrolleeSelected(baseUrl: string, name: string, track: string, link: string): Mail {
-  return build("You are selected for Scale to Thrive", {
+// The set-password link itself arrives in a separate email from Supabase (subject "You've been invited").
+const passwordSteps =
+  "<strong>Important: set your password to sign in</strong><br>" +
+  "1. Open the <strong>separate email</strong> from Scale To Thrive with the subject <strong>&ldquo;You&rsquo;ve been invited&rdquo;</strong>. If you cannot find it, check your Spam or Promotions folder.<br>" +
+  "2. Click <strong>Accept invitation</strong> in that email and choose your password.<br>" +
+  "3. Come back to the sign-in page and sign in with this email address and your new password.";
+
+export function enrolleeSelected(baseUrl: string, name: string, track: string): Mail {
+  const it = track === "IT";
+  return build("Congratulations, you are selected for Scale to Thrive", {
     baseUrl,
-    preheader: `Congratulations, you have a seat in the ${track} workshop. Set your password to get started.`,
+    preheader: `You have a seat in the ${track} workshop. One more step: set your password to sign in.`,
     eyebrow: "You are in",
     title: `Congratulations ${name.split(" ")[0]}, you are selected`,
     paragraphs: [
-      `Your application was successful. You have a seat in the <strong>${esc(track)} track</strong> of the Scale to Thrive workshop.`,
-      "<strong>Your next steps</strong><br>1. Set your password using the button below.<br>2. Sign in to open your student profile.<br>3. Follow your weekly milestones and, as you progress, apply for jobs posted by our partner companies.",
-      "We are glad to have you with us.",
+      `Your application was successful. You have a seat in the <strong>${esc(track)} track</strong> of the Scale to Thrive workshop, a practical, job-oriented program for engineering students and graduates.`,
+      `<strong>What to expect</strong><br>&bull; 12 weeks of hybrid learning, ${it ? "96" : "60"} guided hours (${it ? "2 online sessions of 2 hours plus one 4-hour offline lab every week" : "1 hour of communication, 1 hour online and a 3-hour offline lab every week"}).<br>&bull; Hands-on labs and real projects you can show in interviews.<br>&bull; Your student profile, where you follow weekly milestones and apply for jobs posted by partner companies.`,
+      passwordSteps,
     ],
-    cta: { label: "Set my password", url: link },
-    note: linkNote,
+    cta: { label: "Go to the sign-in page", url: `${baseUrl}/login` },
+    note: "We are glad to have you with us. Please keep your account details private.",
   });
 }
 
-export function companyWelcome(baseUrl: string, company: string, link: string): Mail {
+export function companyWelcome(baseUrl: string, company: string): Mail {
   return build("Welcome to Scale to Thrive", {
     baseUrl,
-    preheader: `Your hiring account for ${company} is ready. Set your password to sign in.`,
+    preheader: `Your hiring account for ${company} is ready. One more step: set your password to sign in.`,
     eyebrow: "Hiring partner",
     title: `Welcome, ${company}`,
     paragraphs: [
-      `A hiring account for <strong>${esc(company)}</strong> has been created on the Scale to Thrive platform.`,
-      "<strong>What you can do</strong><br>1. Post job openings for our trained engineering students and graduates.<br>2. Review applicants and their complete profiles, which students share with you when they apply.<br>3. Move candidates through shortlisted, interview, offered and selected. Each student is emailed automatically at every step.",
-      "Set your password to sign in and post your first job.",
+      `A hiring account for <strong>${esc(company)}</strong> has been created on the Scale to Thrive platform. We are pleased to have you as a hiring partner.`,
+      "<strong>What you can do</strong><br>&bull; Post job openings for our trained engineering students and recent graduates.<br>&bull; Review applicants and their complete profiles, which students share with you when they apply.<br>&bull; Move candidates through shortlisted, interview, offered and selected. Each student is emailed automatically at every step.",
+      passwordSteps,
     ],
-    cta: { label: "Set my password", url: link },
-    note: linkNote,
+    cta: { label: "Go to the sign-in page", url: `${baseUrl}/login` },
+    note: "Need help? Write to info@anvesana.co.in.",
   });
 }
 
