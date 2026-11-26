@@ -4,6 +4,7 @@ import { getProfile, getUserId } from "@/lib/auth";
 import { supabaseConfigured } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
 import Notice from "@/components/Notice";
+import ReadMore from "@/components/ReadMore";
 import { applyToJob } from "./actions";
 import { field, btn, card } from "@/lib/ui";
 
@@ -43,7 +44,7 @@ export default async function Jobs({ searchParams }: PageProps<"/jobs">) {
         <div className="min-w-0 flex-1">
           <h3 className="text-lg font-semibold">{j.title}</h3>
           <p className="text-sm text-muted">{j.is_special ? "Scale to Thrive" : j.companies?.name} · {j.location ?? "Location not set"} · {j.track_id ? (j.track_id === "it" ? "IT track" : "Non-IT track") : "Both tracks"}{j.apply_by ? ` · apply by ${j.apply_by}` : ""}</p>
-          <p className="mt-3 whitespace-pre-line text-sm">{j.description}</p>
+          <ReadMore text={j.description} className="mt-3" />
           {j.external_url && <p className="mt-2 text-sm"><a className="text-accent" href={j.external_url} rel="noopener noreferrer" target="_blank">Company website / apply link</a></p>}
           {me?.role === "enrollee" && (
             applied.has(j.id) ? <p className="mt-4 text-sm font-medium text-green-700">You applied for this job</p> : (
