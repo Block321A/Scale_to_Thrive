@@ -41,7 +41,7 @@ export default function ApplicationForm({ openTracks }: { openTracks: Track[] })
 
       <fieldset className="grid gap-4 sm:grid-cols-2">
         <legend className="mb-3 text-lg font-semibold">2. Personal details</legend>
-        <div><label className={label}>Full name *</label><input name="full_name" required className={input} /></div>
+        <div><label className={label}>Full name * <span className="font-normal text-muted">(type in English letters)</span></label><input name="full_name" required className={input} /></div>
         <div><label className={label}>Email *</label><input name="email" required type="email" className={input} /></div>
         <div><label className={label}>Phone / WhatsApp *</label><input name="phone" required type="tel" className={input} /></div>
         <div><label className={label}>Date of birth</label><input name="dob" type="date" className={input} /></div>
