@@ -12,7 +12,7 @@ export default async function Companies({ searchParams }: PageProps<"/admin/comp
   return (
     <>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-3xl font-semibold tracking-tight">Companies</h1>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Companies</h1>
         <a href="/admin/export?type=companies" className={btnGhost}>Export Excel</a>
       </div>
       <Notice ok={sp.ok} err={sp.err} />

@@ -10,7 +10,7 @@ export default async function Admins({ searchParams }: PageProps<"/admin/admins"
   return (
     <>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-3xl font-semibold tracking-tight">Admins</h1>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Admins</h1>
         <a href="/admin/export?type=admins" className={btnGhost}>Export Excel</a>
       </div>
       <Notice ok={sp.ok} err={sp.err} />

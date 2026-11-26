@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Notice from "@/components/Notice";
 import { createSpecialJob, setJobStatus, deleteJob } from "../actions";
-import { field, btn, btnGhost, btnDanger, card, th, td } from "@/lib/ui";
+import { field, btn, btnGhost, btnDanger, card, th, td, table, thead, tbody, tr } from "@/lib/ui";
 
 type Row = { id: string; title: string; status: string; is_special: boolean; track_id: string | null; companies: { name: string } | null; job_applications: { stage: string }[] };
 
@@ -24,7 +24,7 @@ export default async function Jobs({ searchParams }: PageProps<"/admin/jobs">) {
   return (
     <>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-3xl font-semibold tracking-tight">Jobs</h1>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Jobs</h1>
         <div className="flex flex-wrap gap-2">
           <a href="/admin/export?type=job-applications&track=it" className={btn}>Export IT job applications (Excel)</a>
           <a href="/admin/export?type=job-applications&track=non-it" className={btn}>Export Non-IT job applications (Excel)</a>
@@ -51,16 +51,16 @@ export default async function Jobs({ searchParams }: PageProps<"/admin/jobs">) {
       </form>
 
       <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
-        <table className="w-full">
-          <thead><tr className="border-b border-black/5"><th className={th}>Job</th><th className={th}>Company</th><th className={th}>Applicants</th><th className={th}>Selected</th><th className={th}>Status</th><th className={th}></th></tr></thead>
-          <tbody className="divide-y divide-black/5">
+        <table className={table}>
+          <thead className={thead}><tr className="border-b border-black/5"><th className={th}>Job</th><th className={th}>Company</th><th className={th}>Applicants</th><th className={th}>Selected</th><th className={th}>Status</th><th className={th}></th></tr></thead>
+          <tbody className={tbody}>
             {rows.map((j) => (
-              <tr key={j.id}>
+              <tr key={j.id} className={tr}>
                 <td className={td}><p className="font-medium">{j.title}</p><p className="text-muted">{j.track_id ? (j.track_id === "it" ? "IT" : "Non-IT") : "Both tracks"}</p></td>
-                <td className={td}>{j.is_special ? "Special (admin)" : j.companies?.name}</td>
-                <td className={td}>{j.job_applications.length}</td>
-                <td className={td}>{j.job_applications.filter((a) => a.stage === "selected").length}</td>
-                <td className={td}>{j.status}</td>
+                <td className={td} data-label="Company">{j.is_special ? "Special (admin)" : j.companies?.name}</td>
+                <td className={td} data-label="Applicants">{j.job_applications.length}</td>
+                <td className={td} data-label="Selected">{j.job_applications.filter((a) => a.stage === "selected").length}</td>
+                <td className={td} data-label="Status">{j.status}</td>
                 <td className={td}>
                   <div className="flex gap-2">
                     <form action={setJobStatus}><input type="hidden" name="id" value={j.id} /><input type="hidden" name="status" value={j.status === "open" ? "closed" : "open"} /><button className={btnGhost}>{j.status === "open" ? "Close" : "Reopen"}</button></form>

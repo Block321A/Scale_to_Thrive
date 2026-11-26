@@ -14,15 +14,15 @@ export default async function Dashboard() {
   ]);
   const rows = (intake.data ?? []) as { track_id: string; seats_total: number; seats_left: number; applications_open: boolean; opening_date: string | null }[];
   const stat = (label: string, v: number | null) => (
-    <div className={card}><p className="text-3xl font-semibold">{v ?? 0}</p><p className="text-sm text-muted">{label}</p></div>
+    <div className={card}><p className="text-2xl font-semibold md:text-3xl">{v ?? 0}</p><p className="text-sm text-muted">{label}</p></div>
   );
   return (
     <>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-3xl font-semibold tracking-tight">Dashboard</h1>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Dashboard</h1>
         <a href="/admin/export?type=members" className={btnGhost}>Download all members (Excel)</a>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-4">
         {stat("New applications", pending.count)}
         {stat("Enrollees", enrollees.count)}
         {stat("Open jobs", jobs.count)}

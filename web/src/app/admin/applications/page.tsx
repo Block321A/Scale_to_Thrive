@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Notice from "@/components/Notice";
 import { setApplicationStatus, finalizeApplication } from "../actions";
-import { field, btn, btnGhost, btnDanger, th, td } from "@/lib/ui";
+import { field, btn, btnGhost, btnDanger, th, td, table, thead, tbody, tr } from "@/lib/ui";
 
 const badge: Record<string, string> = {
   pending: "bg-amber-50 text-amber-800", shortlisted: "bg-blue-50 text-blue-800",
@@ -30,25 +30,25 @@ export default async function Applications({ searchParams }: PageProps<"/admin/a
   return (
     <>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-3xl font-semibold tracking-tight">Applications</h1>
+        <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">Applications</h1>
         <a href={`/admin/export?type=applications&${exportQs}`} className={btnGhost}>Export Excel</a>
       </div>
       <Notice ok={sp.ok} err={sp.err} />
       <form className="mb-4 flex flex-wrap gap-2">
-        <select name="track" defaultValue={track} className={field + " w-36"}><option value="">All tracks</option><option value="it">IT</option><option value="non-it">Non-IT</option></select>
-        <select name="status" defaultValue={status} className={field + " w-36"}><option value="">All statuses</option>{["pending", "shortlisted", "finalized", "rejected"].map((s) => <option key={s}>{s}</option>)}</select>
-        <input name="q" defaultValue={q} placeholder="Search name or email" className={field + " w-60"} />
+        <select name="track" defaultValue={track} className={field + " sm:w-36"}><option value="">All tracks</option><option value="it">IT</option><option value="non-it">Non-IT</option></select>
+        <select name="status" defaultValue={status} className={field + " sm:w-36"}><option value="">All statuses</option>{["pending", "shortlisted", "finalized", "rejected"].map((s) => <option key={s}>{s}</option>)}</select>
+        <input name="q" defaultValue={q} placeholder="Search name or email" className={field + " sm:w-60"} />
         <button className={btn}>Filter</button>
       </form>
       <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
-        <table className="w-full">
-          <thead><tr className="border-b border-black/5"><th className={th}>Applicant</th><th className={th}>Track</th><th className={th}>Details</th><th className={th}>Status</th><th className={th}>Actions</th></tr></thead>
-          <tbody className="divide-y divide-black/5">
+        <table className={table}>
+          <thead className={thead}><tr className="border-b border-black/5"><th className={th}>Applicant</th><th className={th}>Track</th><th className={th}>Details</th><th className={th}>Status</th><th className={th}>Actions</th></tr></thead>
+          <tbody className={tbody}>
             {(data ?? []).map((a) => (
-              <tr key={a.id}>
+              <tr key={a.id} className={tr}>
                 <td className={td}><p className="font-medium">{a.full_name}</p><p className="text-muted">{a.email}</p><p className="text-muted">{a.phone}</p></td>
-                <td className={td}>{a.track_id === "it" ? "IT" : "Non-IT"}</td>
-                <td className={td + " max-w-xs"}>
+                <td className={td} data-label="Track">{a.track_id === "it" ? "IT" : "Non-IT"}</td>
+                <td className={td + " md:max-w-xs"}>
                   <details><summary className="cursor-pointer text-accent">View</summary>
                     <div className="mt-2 space-y-1 text-muted">
                       <p>College: {a.college}</p><p>Education: {a.answers?.education_level ?? "-"}{a.answers?.branch ? `, ${a.answers.branch}` : ""} ({a.answers?.education_status === "completed" ? "passed out" : "studying"} {a.answers?.passout_year ?? ""})</p><p>City: {a.city_state ?? "-"}</p>
@@ -59,8 +59,8 @@ export default async function Applications({ searchParams }: PageProps<"/admin/a
                     </div>
                   </details>
                 </td>
-                <td className={td}><span className={`rounded-full px-3 py-1 text-xs font-medium ${badge[a.status]}`}>{a.status}</span></td>
-                <td className={td}>
+                <td className={td} data-label="Status"><span className={`rounded-full px-3 py-1 text-xs font-medium ${badge[a.status]}`}>{a.status}</span></td>
+                <td className={td + " pt-3 md:pt-3"}>
                   <div className="flex flex-wrap gap-2">
                   <a href={`/documents/application?id=${a.id}`} className={btnGhost}>Download PDF</a>
                   {a.status !== "finalized" && a.status !== "rejected" && (
