@@ -151,5 +151,6 @@
 - [ ] Applications and enrollees created before this change have no education details; their resume falls back to "B.E. / B.Tech" and the ATS score shows what is missing
 
 ## Speed and region
-- [x] Supabase project is in Sydney (ap-southeast-2). `web/vercel.json` runs Vercel's functions in Sydney (`syd1`) next to it.
-- [ ] Best for users in India: new Supabase project in Mumbai (ap-south-1), then change `regions` in `web/vercel.json` to `bom1`. Supabase cannot move a project to another region in place.
+- [x] Supabase project is in Mumbai (ap-south-1). `web/vercel.json` runs Vercel's functions in Mumbai (`bom1`) next to it.
+- [x] Moved from the old Sydney project: schema re-run, admin user recreated, Site URL, redirect URL, sign-ups off, SMTP and Vercel keys updated.
+- [ ] Delete the old Sydney Supabase project and the old Google app password after testing.
