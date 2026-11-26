@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getProfile, homeFor } from "@/lib/auth";
-import { supabaseConfigured, siteUrl } from "@/lib/supabase/env";
-import { createImplicitClient } from "@/lib/supabase/implicit";
+import { supabaseConfigured } from "@/lib/supabase/env";
+import { sendPasswordLink } from "@/lib/invite";
 
 async function signIn(formData: FormData) {
   "use server";
@@ -18,7 +18,7 @@ async function signIn(formData: FormData) {
 
 async function forgot(formData: FormData) {
   "use server";
-  await createImplicitClient().auth.resetPasswordForEmail(String(formData.get("email")).trim(), { redirectTo: `${siteUrl}/set-password` });
+  await sendPasswordLink(String(formData.get("email")).trim());
   redirect("/login?sent=1");
 }
 

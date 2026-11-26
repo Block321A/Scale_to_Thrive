@@ -127,3 +127,8 @@
 - [x] Supabase emails generated to `supabase/email-templates/`: invite, reset password, confirm sign up, magic link, change email, reauthentication. Paste into Supabase -> Authentication -> Emails. Rebuild with `npm run build:emails` in `web/`.
 - [x] Website emails can send through SMTP (Gmail) or Resend. Set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` in Vercel.
 - [ ] Replace low-resolution partner logos (cropped from the poster) with official files
+
+## Branded account emails (done)
+- [x] The website now generates set-password links itself and sends them in its own branded templates (no pasting into Supabase needed): selected enrollee, company welcome, admin invite, password reset. Falls back to Supabase's plain email if the mailer is not configured.
+- [ ] Vercel needs SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS (Gmail app password) for any website email to send
+- [ ] Known limit: the public "Forgot your password?" form can trigger emails to existing accounts without a throttle

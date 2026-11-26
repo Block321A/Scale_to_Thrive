@@ -4,13 +4,11 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireRole } from "@/lib/auth";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
-import { siteUrl } from "@/lib/supabase/env";
 import { sendEmail, mails } from "@/lib/email";
-import { createImplicitClient } from "@/lib/supabase/implicit";
+import { inviteUser, sendPasswordLink } from "@/lib/invite";
 
 const str = (f: FormData, k: string) => String(f.get(k) ?? "").trim();
 const back = (path: string, msg: string, ok = true) => redirect(`${path}?${ok ? "ok" : "err"}=${encodeURIComponent(msg)}`);
-const inviteTo = `${siteUrl}/set-password`;
 
 // ---- Tracks and handlers -------------------------------------------------
 export async function updateTrack(f: FormData) {
@@ -70,15 +68,15 @@ export async function finalizeApplication(f: FormData) {
   if (error) return back("/admin/applications", error.message, false);
 
   const admin = createAdminClient();
-  const { data: app } = await admin.from("applications").select("full_name, email, photo_path").eq("id", id).single();
+  const { data: app } = await admin.from("applications").select("full_name, email, photo_path, track_id").eq("id", id).single();
   if (!app) return back("/admin/applications", "Application not found", false);
 
-  const invited = await admin.auth.admin.inviteUserByEmail(app.email, { data: { full_name: app.full_name }, redirectTo: inviteTo });
-  if (invited.error || !invited.data.user) {
+  const invited = await inviteUser(app.email, app.full_name, { kind: "enrollee", track: app.track_id === "it" ? "IT" : "Non-IT" });
+  if (!invited.ok) {
     await admin.from("applications").update({ status: "shortlisted" }).eq("id", id);
-    return back("/admin/applications", "Invite failed: " + (invited.error?.message ?? "unknown"), false);
+    return back("/admin/applications", "Invite failed: " + invited.error, false);
   }
-  const uid = invited.data.user.id;
+  const uid = invited.userId;
   const created = await admin.rpc("create_enrollee", { app_id: id, uid });
   if (created.error) return back("/admin/applications", "Profile setup failed: " + created.error.message, false);
   if (app.photo_path) {
@@ -86,7 +84,7 @@ export async function finalizeApplication(f: FormData) {
     await admin.from("profiles").update({ photo_url: data.publicUrl }).eq("id", uid);
   }
   revalidatePath("/admin", "layout");
-  back("/admin/applications", "Finalized. Set-password email sent.");
+  back("/admin/applications", invited.emailed ? "Finalized. Set-password email sent." : "Finalized, but the email could not be sent. Use Resend on the Enrollees page.", invited.emailed);
 }
 
 // ---- Enrollees -----------------------------------------------------------
@@ -102,7 +100,7 @@ export async function setMilestone(f: FormData) {
 
 export async function resendLink(f: FormData) {
   await requireRole("admin");
-  await createImplicitClient().auth.resetPasswordForEmail(str(f, "email"), { redirectTo: inviteTo });
+  await sendPasswordLink(str(f, "email"));
   back(str(f, "from") || "/admin/enrollees", "Set-password email sent");
 }
 
@@ -112,9 +110,9 @@ export async function createCompany(f: FormData) {
   const admin = createAdminClient();
   const name = str(f, "name");
   const email = str(f, "email");
-  const invited = await admin.auth.admin.inviteUserByEmail(email, { data: { full_name: name }, redirectTo: inviteTo });
-  if (invited.error || !invited.data.user) return back("/admin/companies", invited.error?.message ?? "Invite failed", false);
-  const uid = invited.data.user.id;
+  const invited = await inviteUser(email, name, { kind: "company" });
+  if (!invited.ok) return back("/admin/companies", invited.error, false);
+  const uid = invited.userId;
   await admin.from("profiles").update({ role: "company", full_name: name }).eq("id", uid);
 
   let logo_path: string | null = null;
@@ -127,7 +125,7 @@ export async function createCompany(f: FormData) {
   }
   const { error } = await admin.from("companies").insert({ user_id: uid, name, email, description: str(f, "description") || null, logo_path, created_by: me.id });
   if (error) return back("/admin/companies", error.message, false);
-  back("/admin/companies", "Company created. Set-password email sent.");
+  back("/admin/companies", invited.emailed ? "Company created. Set-password email sent." : "Company created, but the email could not be sent. Use Resend on its card.", invited.emailed);
 }
 
 // ---- Admin-posted "Special" jobs ----------------------------------------
@@ -162,10 +160,10 @@ export async function inviteAdmin(f: FormData) {
   await requireRole("admin");
   const admin = createAdminClient();
   const email = str(f, "email");
-  const invited = await admin.auth.admin.inviteUserByEmail(email, { redirectTo: inviteTo });
-  if (invited.error || !invited.data.user) return back("/admin/admins", invited.error?.message ?? "Invite failed", false);
-  await admin.from("profiles").update({ role: "admin" }).eq("id", invited.data.user.id);
-  back("/admin/admins", "Admin invited");
+  const invited = await inviteUser(email, "", { kind: "admin" });
+  if (!invited.ok) return back("/admin/admins", invited.error, false);
+  await admin.from("profiles").update({ role: "admin" }).eq("id", invited.userId);
+  back("/admin/admins", invited.emailed ? "Admin invited" : "Admin created, but the email could not be sent.", invited.emailed);
 }
 
 export async function removeAdmin(f: FormData) {

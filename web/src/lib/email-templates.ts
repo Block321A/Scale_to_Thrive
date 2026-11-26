@@ -75,3 +75,69 @@ export function jobStage(baseUrl: string, name: string, job: string, company: st
     cta: { label: "View my applications", url: `${baseUrl}/profile` },
   });
 }
+
+// ---------- Account emails (set-password links the website generates itself) ----------
+
+const linkNote = "This link works once and expires after a short time. If it has expired, ask the Scale to Thrive team to send a new one, or use &quot;Forgot your password?&quot; on the sign-in page. Please do not forward this email.";
+
+export function enrolleeSelected(baseUrl: string, name: string, track: string, link: string): Mail {
+  return build("You are selected for Scale to Thrive", {
+    baseUrl,
+    preheader: `Congratulations, you have a seat in the ${track} workshop. Set your password to get started.`,
+    eyebrow: "You are in",
+    title: `Congratulations ${name.split(" ")[0]}, you are selected`,
+    paragraphs: [
+      `Your application was successful. You have a seat in the <strong>${esc(track)} track</strong> of the Scale to Thrive workshop.`,
+      "<strong>Your next steps</strong><br>1. Set your password using the button below.<br>2. Sign in to open your student profile.<br>3. Follow your weekly milestones and, as you progress, apply for jobs posted by our partner companies.",
+      "We are glad to have you with us.",
+    ],
+    cta: { label: "Set my password", url: link },
+    note: linkNote,
+  });
+}
+
+export function companyWelcome(baseUrl: string, company: string, link: string): Mail {
+  return build("Welcome to Scale to Thrive", {
+    baseUrl,
+    preheader: `Your hiring account for ${company} is ready. Set your password to sign in.`,
+    eyebrow: "Hiring partner",
+    title: `Welcome, ${company}`,
+    paragraphs: [
+      `A hiring account for <strong>${esc(company)}</strong> has been created on the Scale to Thrive platform.`,
+      "<strong>What you can do</strong><br>1. Post job openings for our trained engineering students and graduates.<br>2. Review applicants and their complete profiles, which students share with you when they apply.<br>3. Move candidates through shortlisted, interview, offered and selected. Each student is emailed automatically at every step.",
+      "Set your password to sign in and post your first job.",
+    ],
+    cta: { label: "Set my password", url: link },
+    note: linkNote,
+  });
+}
+
+export function adminInvite(baseUrl: string, link: string): Mail {
+  return build("You are invited as a Scale to Thrive admin", {
+    baseUrl,
+    preheader: "Set your password to start managing the Scale to Thrive program.",
+    eyebrow: "Admin invitation",
+    title: "You are invited as an admin",
+    paragraphs: [
+      "You have been added as an administrator of the <strong>Scale to Thrive</strong> platform.",
+      "As an admin you can manage workshop tracks, review and finalize applications, track enrollees, post jobs and add hiring companies. All admins have the same access.",
+    ],
+    cta: { label: "Set my password", url: link },
+    note: linkNote,
+  });
+}
+
+export function passwordReset(baseUrl: string, name: string, link: string): Mail {
+  return build("Reset your Scale to Thrive password", {
+    baseUrl,
+    preheader: "Use this link to choose a new password.",
+    eyebrow: "Password reset",
+    title: "Choose a new password",
+    paragraphs: [
+      `${name ? `Hi ${esc(name.split(" ")[0])}, w` : "W"}e received a request to set a new password for your Scale to Thrive account. Use the button below to choose one.`,
+    ],
+    cta: { label: "Set a new password", url: link },
+    note: "If you did not ask for this, you can safely ignore this email. Your password will not change.",
+    showAbout: false,
+  });
+}
