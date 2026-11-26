@@ -1,0 +1,96 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Scale to Thrive - mobile design</title>
+<style>
+:root{--navy:#1e3a5f;--brown:#8b4a2b;--accent:#0071e3;--muted:#6e6e73;--surface:#f5f5f7}
+*{box-sizing:border-box;margin:0}
+body{background:#e9ebf0;font-family:-apple-system,"SF Pro Display","Helvetica Neue",Arial,sans-serif;color:#1d1d1f;padding:40px;display:flex;gap:36px;justify-content:center;align-items:flex-start}
+.col{display:flex;flex-direction:column;align-items:center;gap:14px}
+.label{font-weight:700;font-size:15px;color:#333}
+.sub{font-size:12px;color:#666;max-width:300px;text-align:center}
+.phone{width:320px;height:660px;background:#fff;border-radius:40px;border:8px solid #111;overflow:hidden;position:relative;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.bar{height:52px;background:#fff;border-bottom:1px solid #ececf0;display:flex;align-items:center;justify-content:space-between;padding:0 14px;position:relative;z-index:3}
+.logo{font-weight:800;font-size:17px;color:var(--navy);letter-spacing:.2px}.logo b{color:var(--brown)}.logo i{font-size:9px;color:var(--brown);font-weight:600}
+.pill{background:var(--accent);color:#fff;border-radius:99px;padding:8px 16px;font-size:12px;font-weight:600}
+.burger{width:18px;height:12px;border-top:2px solid #1d1d1f;border-bottom:2px solid #1d1d1f;position:relative;margin-left:12px}
+.burger:after{content:"";position:absolute;left:0;right:0;top:3px;border-top:2px solid #1d1d1f}
+.right{display:flex;align-items:center}
+.hero{height:330px;background:linear-gradient(180deg,rgba(10,20,40,.35),rgba(10,20,40,.88)),url(hero-students.jpg) center/cover;color:#fff;padding:26px 18px;display:flex;flex-direction:column;justify-content:flex-end}
+.eyebrow{font-size:10px;letter-spacing:1.6px;opacity:.85;font-weight:600}
+h1{font-size:30px;line-height:1.08;margin:8px 0;font-weight:700}
+.lead{font-size:13px;line-height:1.45;opacity:.95}
+.btns{display:flex;gap:8px;margin-top:14px}
+.btn{background:var(--accent);color:#fff;border-radius:99px;padding:11px 18px;font-size:13px;font-weight:600}
+.btn.g{background:rgba(255,255,255,.2)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-bottom:1px solid #ececf0}
+.stat{padding:14px 6px;text-align:center}.stat b{display:block;font-size:20px;color:var(--navy)}.stat span{font-size:10px;color:var(--muted)}
+.sec{padding:20px 16px}
+.sec h2{font-size:22px;line-height:1.15;margin-bottom:6px}
+.sec p{font-size:13px;color:var(--muted);line-height:1.45}
+.seg{display:flex;background:var(--surface);border-radius:99px;padding:4px;margin:14px 0}
+.seg div{flex:1;text-align:center;padding:9px;border-radius:99px;font-size:13px;font-weight:600;color:var(--muted)}
+.seg .on{background:#fff;color:#1d1d1f;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.card{background:var(--surface);border-radius:22px;padding:16px;margin-top:10px}
+.tag{display:inline-block;background:#fff;border-radius:99px;padding:6px 11px;font-size:11px;margin:3px 3px 0 0}
+.meta{display:flex;gap:8px;margin-top:10px}.meta div{flex:1;background:#fff;border-radius:14px;padding:9px;font-size:10px;color:var(--muted)}.meta b{display:block;font-size:14px;color:#1d1d1f}
+.row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid #ececf0;font-size:13px}
+.row .w{color:var(--brown);font-weight:700;width:52px;white-space:nowrap}.row .t{flex:1;font-weight:500}.row .p{color:var(--muted);font-size:18px}
+.open{background:#f0fff4;border-radius:14px;padding:10px 12px;font-size:12px;color:#157347;margin-top:10px;font-weight:600}
+.sticky{position:absolute;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);border-top:1px solid #ececf0;padding:10px 14px 18px;display:flex;align-items:center;gap:10px;z-index:4;box-shadow:0 -6px 20px rgba(0,0,0,.08)}
+.sticky .info{flex:1;font-size:11px;color:var(--muted);line-height:1.3}.sticky .info b{display:block;color:#1d1d1f;font-size:13px}
+.sticky .btn{padding:12px 20px}
+.team{display:flex;gap:10px;margin-top:10px;overflow:hidden}
+.person{min-width:130px;background:var(--surface);border-radius:20px;padding:12px;text-align:center;font-size:12px}
+.av{width:56px;height:56px;border-radius:50%;margin:0 auto 8px;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:700}
+.field{border:1px solid #d2d2d7;border-radius:12px;padding:12px;font-size:13px;color:var(--muted);margin-top:10px}
+.bar.menu{background:#fff}
+.mi{padding:16px;font-size:20px;font-weight:600;border-bottom:1px solid #ececf0}
+</style></head><body>
+
+<div class="col"><div class="label">1. Home (top)</div>
+<div class="phone">
+ <div class="bar"><div class="logo">SCALE <i>to</i> <b>THRIVE</b></div><div class="right"><div class="pill">Apply</div><div class="burger"></div></div></div>
+ <div class="hero"><div class="eyebrow">ANVESANA TBI · PES TRUST</div><h1>Great skills build great careers.</h1><div class="lead">Two 12-week hybrid workshops for engineering students and recent graduates.</div><div class="btns"><div class="btn">Apply now</div><div class="btn g">Explore</div></div></div>
+ <div class="stats"><div class="stat"><b>12</b><span>weeks</span></div><div class="stat"><b>2</b><span>tracks</span></div><div class="stat"><b>Hybrid</b><span>format</span></div></div>
+ <div class="sec"><h2>Two workshops. One goal: get job-ready.</h2><p>Pick the track that fits your career. Both build technical skill with real projects.</p></div>
+ <div class="sticky"><div class="info"><b>Applications open</b>Starts 15 Dec · 60 seats</div><div class="btn">Apply now</div></div>
+</div><div class="sub">Short hero, solid top bar, key facts in one row, sticky Apply bar.</div></div>
+
+<div class="col"><div class="label">2. Choose a track</div>
+<div class="phone">
+ <div class="bar"><div class="logo">SCALE <i>to</i> <b>THRIVE</b></div><div class="right"><div class="pill">Apply</div><div class="burger"></div></div></div>
+ <div class="sec"><h2>Pick your track</h2><p>Switch to compare. Only one is shown at a time.</p>
+ <div class="seg"><div class="on">IT</div><div>Non-IT</div></div>
+ <div class="card"><div style="font-size:10px;letter-spacing:1.5px;color:var(--brown);font-weight:700">IT TRACK</div><h2 style="font-size:20px;margin:6px 0">Master the skills. Build your future.</h2>
+ <p>Linux, Python, PostgreSQL, Git, AWS S3 and AI productivity.</p>
+ <div style="margin-top:8px"><span class="tag">Linux</span><span class="tag">Python</span><span class="tag">PostgreSQL</span><span class="tag">Git</span><span class="tag">AWS S3</span></div>
+ <div class="meta"><div><b>96 h</b>total</div><div><b>12 wks</b>hybrid</div><div><b>60</b>seats</div></div>
+ <div class="open">● Applications open · Starts 15 Dec</div></div></div>
+ <div class="sticky"><div class="info"><b>IT track</b>Applications open</div><div class="btn">Apply now</div></div>
+</div><div class="sub">IT / Non-IT switch replaces two long stacked sections.</div></div>
+
+<div class="col"><div class="label">3. Curriculum</div>
+<div class="phone">
+ <div class="bar"><div class="logo">SCALE <i>to</i> <b>THRIVE</b></div><div class="right"><div class="pill">Apply</div><div class="burger"></div></div></div>
+ <div class="sec"><h2>Twelve weeks, week by week.</h2>
+ <div class="seg"><div class="on">IT</div><div>Non-IT</div></div>
+ <div class="row"><span class="w">Week 1</span><span class="t">Linux Basics</span><span class="p">+</span></div>
+ <div class="row"><span class="w">Week 2</span><span class="t">Linux Administration</span><span class="p">+</span></div>
+ <div class="row"><span class="w">Week 3</span><span class="t">Advanced Linux Admin</span><span class="p">+</span></div>
+ <div class="row"><span class="w">Week 4</span><span class="t">Shell Scripting</span><span class="p">+</span></div>
+ <div class="row"><span class="w">Week 5</span><span class="t">Shell Automation</span><span class="p">+</span></div>
+ <div class="row"><span class="w">Week 6</span><span class="t">Python Fundamentals</span><span class="p">+</span></div>
+ <div class="row"><span class="w">Week 10</span><span class="t">Python Integration</span><span class="p">+</span></div>
+ <div style="text-align:center;color:var(--accent);font-weight:600;font-size:13px;padding-top:12px">Show all 12 weeks</div></div>
+ <div class="sticky"><div class="info"><b>Ready to start?</b>60 seats left</div><div class="btn">Apply now</div></div>
+</div><div class="sub">Week labels stay on one line. First 7 weeks shown, then "Show all".</div></div>
+
+<div class="col"><div class="label">4. Trainers + apply</div>
+<div class="phone">
+ <div class="bar"><div class="logo">SCALE <i>to</i> <b>THRIVE</b></div><div class="right"><div class="pill">Apply</div><div class="burger"></div></div></div>
+ <div class="sec"><h2>Meet your trainers</h2>
+ <div class="team"><div class="person"><div class="av">DA</div><b>Dr. Arjun U</b><br><span style="color:var(--muted)">HOD of CE</span></div><div class="person"><div class="av">PA</div><b>Prajwal A</b><br><span style="color:var(--muted)">PES CoE</span></div></div></div>
+ <div class="sec" style="padding-top:0"><h2>Apply in 2 minutes</h2><p>Takes about 2 minutes. You'll get an email when you're shortlisted.</p>
+ <div class="field">Full name</div><div class="field">Email</div><div class="field">Highest education</div>
+ <div class="btn" style="text-align:center;margin-top:12px;padding:14px">Submit application</div></div>
+</div><div class="sub">Trainer photos and a short form; no floating bar here since the form is on screen.</div></div>
+
+</body></html>
