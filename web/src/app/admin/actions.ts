@@ -4,8 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireRole } from "@/lib/auth";
 import { createClient, createAdminClient } from "@/lib/supabase/server";
-import { sendEmail, mails, makeTransport } from "@/lib/email";
-import { getSmtpConfig, clearSmtpCache } from "@/lib/email-config";
+import { sendEmail, mails } from "@/lib/email";
 import { inviteUser, sendPasswordLink } from "@/lib/invite";
 
 const str = (f: FormData, k: string) => String(f.get(k) ?? "").trim();
@@ -175,51 +174,4 @@ export async function removeAdmin(f: FormData) {
   if ((count ?? 0) <= 1) return back("/admin/admins", "Cannot remove the last admin", false);
   await admin.auth.admin.deleteUser(id);
   back("/admin/admins", "Admin removed");
-}
-
-// ---- Email settings (SMTP) ----------------------------------------------
-export async function saveEmailSettings(f: FormData) {
-  const me = await requireRole("admin");
-  const admin = createAdminClient();
-  const host = str(f, "host");
-  const port = Number(f.get("port")) || 465;
-  const user = str(f, "user");
-  const fromName = str(f, "from_name") || "Scale to Thrive";
-  const pass = str(f, "password").replace(/\s+/g, ""); // Google shows app passwords in groups of four
-  if (!host || !user.includes("@")) return back("/admin/settings", "Enter the mail server and your full email address.", false);
-
-  const had = (await admin.rpc("has_app_secret", { secret_name: "smtp_password" })).data as boolean | null;
-  if (!pass && !had) return back("/admin/settings", "Enter the app password.", false);
-  if (pass && pass.length !== 16) return back("/admin/settings", "A Gmail app password has 16 letters. Copy it again from Google.", false);
-
-  const rows = [["smtp_host", host], ["smtp_port", String(port)], ["smtp_user", user], ["smtp_from_name", fromName]].map(([key, value]) => ({ key, value, updated_by: me.id, updated_at: new Date().toISOString() }));
-  const { error } = await admin.from("app_settings").upsert(rows);
-  if (error) return back("/admin/settings", "Could not save. Run supabase/email-settings.sql in Supabase first. (" + error.message + ")", false);
-  if (pass) {
-    const r = await admin.rpc("set_app_secret", { secret_name: "smtp_password", secret_value: pass });
-    if (r.error) return back("/admin/settings", "Could not save the password: " + r.error.message, false);
-  }
-  clearSmtpCache();
-  back("/admin/settings", "Saved. Now click Send test email.");
-}
-
-export async function sendTestEmail() {
-  const me = await requireRole("admin");
-  clearSmtpCache();
-  const cfg = await getSmtpConfig();
-  if (!cfg) return back("/admin/settings", "Email settings are not saved yet.", false);
-  try {
-    const t = mails.test();
-    const transport = makeTransport(cfg);
-    await transport.verify();
-    await transport.sendMail({ from: `${cfg.fromName} <${cfg.user}>`, to: me.email, subject: t.subject, html: t.html, text: t.text });
-  } catch (e) {
-    const err = e as { code?: string; message?: string };
-    const msg =
-      err.code === "EAUTH" ? "The mail server rejected the email address or app password. Check the Gmail address and create a new app password."
-      : err.code === "ECONNECTION" || err.code === "ETIMEDOUT" || err.code === "ESOCKET" ? "Could not reach the mail server. Check the host and port."
-      : "Test failed: " + (err.message ?? "unknown error");
-    return back("/admin/settings", msg, false);
-  }
-  back("/admin/settings", `Test email sent to ${me.email}. Check your inbox (and Spam).`);
 }

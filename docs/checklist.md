@@ -149,9 +149,3 @@
 - [x] Application form now requires: highest education, branch / specialization, education status (currently studying or completed) and year of passing out (expected year if still studying). Validated again on the server. Stored in the application answers, so no database change is needed.
 - [x] Used by the student resume (education section and summary wording), the application PDF, the Excel exports and the admin application view
 - [ ] Applications and enrollees created before this change have no education details; their resume falls back to "B.E. / B.Tech" and the ATS score shows what is missing
-
-## Email settings in the admin panel (done)
-- [x] Admin -> Email settings: SMTP host, port, username, sender name and app password are entered in the website. The app password is stored encrypted in Supabase Vault; the rest in `app_settings`. Needs `supabase/email-settings.sql` run once.
-- [x] The website's own mails (application received, shortlisted, rejected, congratulations, job emails) use nodemailer with those settings. No Vercel variables needed (SMTP_* env vars remain as a fallback).
-- [x] Set-password, reset-password and admin invitations are back to Supabase's own procedure.
-- [ ] Run `supabase/email-settings.sql`, then open Admin -> Email settings, save and send a test
