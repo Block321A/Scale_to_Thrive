@@ -7,6 +7,7 @@ export type PdfSpec = {
   title: string;
   subtitle?: string;
   badge?: string;       // status pill
+  photo?: Uint8Array;   // round PNG of the applicant, shown top right
   sections: PdfSection[];
 };
 
@@ -57,6 +58,7 @@ export async function renderPdf(spec: PdfSpec): Promise<Uint8Array> {
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold);
   const logo = await pdf.embedPng(Buffer.from(LOGO_B64, "base64"));
   const partners = await pdf.embedPng(Buffer.from(PARTNERS_B64, "base64"));
+  const photo = spec.photo ? await pdf.embedPng(spec.photo).catch(() => null) : null;
 
   let page!: PDFPage;
   let y = 0;
@@ -75,19 +77,30 @@ export async function renderPdf(spec: PdfSpec): Promise<Uint8Array> {
 
   newPage(true);
 
-  // Title block
-  for (const l of wrap(spec.title, bold, 22, W - 2 * M)) { page.drawText(l, { x: M, y: y - 22, size: 22, font: bold, color: NAVY }); y -= 28; }
+  // Title block (the photo, when there is one, sits on the right)
+  const PH = 86;
+  const titleTop = y;
+  const textW = photo ? W - 2 * M - PH - 20 : W - 2 * M;
+  for (const l of wrap(spec.title, bold, 22, textW)) { page.drawText(l, { x: M, y: y - 22, size: 22, font: bold, color: NAVY }); y -= 28; }
   if (spec.subtitle) {
-    for (const l of wrap(spec.subtitle, regular, 11, W - 2 * M - 110)) { page.drawText(l, { x: M, y: y - 11, size: 11, font: regular, color: MUTED }); y -= 16; }
+    for (const l of wrap(spec.subtitle, regular, 11, photo ? textW : textW - 110)) { page.drawText(l, { x: M, y: y - 11, size: 11, font: regular, color: MUTED }); y -= 16; }
   }
   if (spec.badge) {
     const label = clean(spec.badge.toUpperCase());
     const bw = bold.widthOfTextAtSize(label, 8.5) + 22;
+    const bx = photo ? M : W - M - bw; // with a photo the pill moves under the title
+    if (photo) y -= 28;
     // pill: a rectangle capped with two circles
-    page.drawRectangle({ x: W - M - bw + 10, y: y + 2, width: bw - 20, height: 20, color: NAVY });
-    page.drawCircle({ x: W - M - bw + 10, y: y + 12, size: 10, color: NAVY });
-    page.drawCircle({ x: W - M - 10, y: y + 12, size: 10, color: NAVY });
-    page.drawText(label, { x: W - M - bw + 11, y: y + 9, size: 8.5, font: bold, color: rgb(1, 1, 1) });
+    page.drawRectangle({ x: bx + 10, y: y + 2, width: bw - 20, height: 20, color: NAVY });
+    page.drawCircle({ x: bx + 10, y: y + 12, size: 10, color: NAVY });
+    page.drawCircle({ x: bx + bw - 10, y: y + 12, size: 10, color: NAVY });
+    page.drawText(label, { x: bx + 11, y: y + 9, size: 8.5, font: bold, color: rgb(1, 1, 1) });
+    if (photo) y -= 4;
+  }
+  if (photo) {
+    page.drawImage(photo, { x: W - M - PH, y: titleTop - PH - 4, width: PH, height: PH });
+    page.drawCircle({ x: W - M - PH / 2, y: titleTop - PH / 2 - 4, size: PH / 2, borderColor: LINE, borderWidth: 1.2 });
+    y = Math.min(y, titleTop - PH - 10);
   }
   y -= 14;
 
