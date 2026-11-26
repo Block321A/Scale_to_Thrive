@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { getProfile } from "@/lib/auth";
+import { getProfile, getUserId } from "@/lib/auth";
 import { supabaseConfigured } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
 import Notice from "@/components/Notice";
@@ -12,20 +12,22 @@ type Job = { id: string; title: string; description: string; location: string | 
 export default async function Jobs({ searchParams }: PageProps<"/jobs">) {
   const sp = await searchParams;
   if (!supabaseConfigured) redirect("/login");
-  const me = await getProfile();
-  if (!me) redirect("/login");
+  const uid = await getUserId();
+  if (!uid) redirect("/login");
   const supabase = await createClient();
   const today = new Date().toISOString().slice(0, 10);
-  // The job list and "jobs I already applied for" are requested together
-  const [{ data }, mine] = await Promise.all([
+  // Profile, job list and "jobs I already applied for" are requested together
+  const [me, { data }, mine] = await Promise.all([
+    getProfile(),
     supabase
       .from("jobs")
       .select("id, title, description, location, track_id, apply_by, external_url, is_special, companies(name, logo_path, description)")
       .eq("status", "open")
       .or(`apply_by.is.null,apply_by.gte.${today}`)
       .order("created_at", { ascending: false }),
-    me.role === "enrollee" ? supabase.from("job_applications").select("job_id").eq("enrollee_id", me.id) : Promise.resolve({ data: [] as { job_id: string }[] }),
+    supabase.from("job_applications").select("job_id").eq("enrollee_id", uid),
   ]);
+  if (!me) redirect("/login");
   const jobs = (data ?? []) as unknown as Job[];
   const applied = new Set<string>((mine.data ?? []).map((m) => m.job_id));
   const logo = (p: string) => supabase.storage.from("logos").getPublicUrl(p).data.publicUrl;

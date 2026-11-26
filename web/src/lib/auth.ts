@@ -8,12 +8,18 @@ export type Profile = { id: string; role: Role; full_name: string | null; email:
 
 // cache() means the layout and the page share one lookup per request.
 // The signed token is verified locally; the role always comes fresh from the database.
-export const getProfile = cache(async (): Promise<Profile | null> => {
+// Who is signed in (from the signed token). Cheap; lets a page start its own queries right away.
+export const getUserId = cache(async (): Promise<string | null> => {
   if (!supabaseConfigured) return null;
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
-  const uid = data?.claims?.sub;
+  return (data?.claims?.sub as string | undefined) ?? null;
+});
+
+export const getProfile = cache(async (): Promise<Profile | null> => {
+  const uid = await getUserId();
   if (!uid) return null;
+  const supabase = await createClient();
   const { data: profile } = await supabase.from("profiles").select("id, role, full_name, email, phone, photo_url").eq("id", uid).single();
   return (profile as Profile) ?? null;
 });

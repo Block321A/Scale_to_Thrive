@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { getProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
-import { buildResume, renderResumePdf, type ResumeInput } from "@/lib/resume";
+import { buildResume, type ResumeInput } from "@/lib/resume";
+import { renderResumePdf } from "@/lib/resume-pdf";
 import { safeFile } from "@/lib/pdf";
 import { loadResumeInput } from "@/lib/resume-data";
 

@@ -1,19 +1,21 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getProfile, homeFor } from "@/lib/auth";
+import { getProfile, homeFor, type Role } from "@/lib/auth";
+import SubmitButton from "@/components/SubmitButton";
 import { supabaseConfigured } from "@/lib/supabase/env";
 import { sendPasswordLink } from "@/lib/invite";
 
 async function signIn(formData: FormData) {
   "use server";
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email: String(formData.get("email")).trim(),
     password: String(formData.get("password")),
   });
-  if (error) redirect("/login?error=credentials");
-  const profile = await getProfile();
-  redirect(profile ? homeFor(profile.role) : "/");
+  if (error || !data.user) redirect("/login?error=credentials");
+  // Use the id from sign-in directly (no second token check)
+  const { data: profile } = await supabase.from("profiles").select("role").eq("id", data.user.id).single();
+  redirect(profile ? homeFor(profile.role as Role) : "/");
 }
 
 async function forgot(formData: FormData) {
@@ -42,7 +44,7 @@ export default async function Login({ searchParams }: PageProps<"/login">) {
       <form action={signIn} className="mt-8 space-y-4">
         <input name="email" type="email" required placeholder="Email" className={field} />
         <input name="password" type="password" required placeholder="Password" className={field} />
-        <button className="w-full rounded-full bg-accent py-3 font-medium text-white hover:bg-[#0077ed]">Sign in</button>
+        <SubmitButton pending="Signing in…" className="w-full rounded-full bg-accent py-3 font-medium text-white hover:bg-[#0077ed] disabled:opacity-70">Sign in</SubmitButton>
       </form>
       <details className="mt-6 text-sm">
         <summary className="cursor-pointer text-accent">Forgot your password?</summary>
