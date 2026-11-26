@@ -43,27 +43,26 @@ export default async function Home() {
         <p className="mt-5 max-w-2xl text-xl text-muted">
           Both build technical skill. The Non-IT track adds a weekly communication module for business and corporate roles.
         </p>
-        <div className="mt-14 grid gap-6 md:grid-cols-2">
+        {/* Subgrid: both cards share the same rows, so headings, numbers, dates and photos line up exactly */}
+        <div className="mt-14 grid gap-y-6 md:grid-cols-2 md:grid-rows-[repeat(6,auto)] md:gap-x-6 md:gap-y-0">
           {tracks.map((t) => (
-            <article key={t.id} className="overflow-hidden rounded-[28px] bg-surface">
-              <div className="p-8 pb-0 md:p-10 md:pb-0">
-                <p className="text-sm font-semibold uppercase tracking-widest text-brown">{t.name} track</p>
-                <h3 className="mt-2 text-3xl font-semibold leading-tight tracking-tight">{t.tagline}</h3>
-                <p className="mt-4 text-lg text-muted">{t.summary}</p>
-                <dl className="mt-8 grid grid-cols-3 gap-4">
-                  <div><dd className="text-4xl font-semibold text-navy">12</dd><dt className="text-sm text-muted">weeks</dt></div>
-                  <div><dd className="text-4xl font-semibold text-navy">{t.hours}</dd><dt className="text-sm text-muted">guided hours</dt></div>
-                  <div><dd className="text-4xl font-semibold text-navy">{t.projects.length}</dd><dt className="text-sm text-muted">projects</dt></div>
-                </dl>
-                <ul className="mt-8 space-y-1 text-sm">
-                  <li><span className="text-muted">Opens: </span><strong>{formatDate(t.openingDate)}</strong></li>
-                  <li><span className="text-muted">Seats: </span><strong>{seatsLeft(t)} of {t.seatsTotal} left</strong></li>
-                  <li>
-                    <span className="text-muted">Applications: </span>
-                    <strong className={t.applicationsOpen ? "text-green-700" : "text-muted"}>{t.applicationsOpen ? "Open" : "Closed"}</strong>
-                  </li>
-                </ul>
-              </div>
+            <article key={t.id} className="grid overflow-hidden rounded-[28px] bg-surface md:row-span-6 md:grid-rows-subgrid">
+              <p className="px-8 pt-8 text-sm font-semibold uppercase tracking-widest text-brown md:px-10 md:pt-10">{t.name} track</p>
+              <h3 className="mt-2 px-8 text-3xl font-semibold leading-tight tracking-tight md:px-10">{t.tagline}</h3>
+              <p className="mt-4 px-8 text-lg text-muted md:px-10">{t.summary}</p>
+              <dl className="mt-8 grid grid-cols-3 gap-4 px-8 md:px-10">
+                <div><dd className="text-4xl font-semibold text-navy">12</dd><dt className="text-sm text-muted">weeks</dt></div>
+                <div><dd className="text-4xl font-semibold text-navy">{t.hours}</dd><dt className="text-sm text-muted">guided hours</dt></div>
+                <div><dd className="text-4xl font-semibold text-navy">{t.projects.length}</dd><dt className="text-sm text-muted">projects</dt></div>
+              </dl>
+              <ul className="mt-8 space-y-1 px-8 text-sm md:px-10">
+                <li><span className="text-muted">Opens: </span><strong>{formatDate(t.openingDate)}</strong></li>
+                <li><span className="text-muted">Seats: </span><strong>{seatsLeft(t)} of {t.seatsTotal} left</strong></li>
+                <li>
+                  <span className="text-muted">Applications: </span>
+                  <strong className={t.applicationsOpen ? "text-green-700" : "text-muted"}>{t.applicationsOpen ? "Open" : "Closed"}</strong>
+                </li>
+              </ul>
               <div className="relative mt-8 h-64">
                 <Image src={t.image} alt={`${t.name} track`} fill sizes="(min-width:768px) 50vw, 100vw" className="object-cover" />
               </div>
