@@ -71,8 +71,8 @@ export async function submitApplication(_: ApplyState, formData: FormData): Prom
   });
 
   if (error) {
-    if (error.code === "23505") return { ok: false, message: "An application with this email already exists for this workshop." };
-    return { ok: false, message: "Applications are closed for this workshop, or something went wrong. Please try again." };
+    if (error.code === "23505") return { ok: false, message: "An application with this email already exists for this chariot." };
+    return { ok: false, message: "Applications are closed for this chariot, or something went wrong. Please try again." };
   }
 
   const trackName = trackId === "it" ? "IT" : "Non-IT";

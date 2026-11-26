@@ -28,7 +28,7 @@ export default async function Tracks({ searchParams }: PageProps<"/admin/tracks"
               <button className={btn}>Save</button>
             </form>
 
-            <h3 className="mt-8 text-sm font-semibold uppercase tracking-wide text-muted">Workshop handlers</h3>
+            <h3 className="mt-8 text-sm font-semibold uppercase tracking-wide text-muted">Chariot handlers</h3>
             <div className="mt-3 space-y-3">
               {(handlers ?? []).filter((h) => h.track_id === t.id).map((h) => (
                 <div key={h.id} className="rounded-2xl border border-black/5 p-4">

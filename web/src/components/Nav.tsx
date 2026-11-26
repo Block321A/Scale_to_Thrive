@@ -7,7 +7,7 @@ import Logo from "./Logo";
 import { readSessionName } from "@/lib/auth-cookie";
 
 const links = [
-  ["/#tracks", "Workshops"],
+  ["/#tracks", "Chariots"],
   ["/#curriculum", "Curriculum"],
   ["/#careers", "Careers"],
   ["/#team", "Team"],

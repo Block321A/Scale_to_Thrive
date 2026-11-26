@@ -20,7 +20,7 @@ export const AUTH_TEMPLATES: { file: string; subject: string; where: string; spe
       paragraphs: [
         hello,
         "You have been added to the <strong>Scale to Thrive</strong> platform. Set your password to activate your account and sign in.",
-        "Depending on your role, you will be able to follow your workshop progress and apply for jobs, post jobs and review applicants, or manage the program.",
+        "Depending on your role, you will be able to follow your chariot progress and apply for jobs, post jobs and review applicants, or manage the program.",
       ],
       cta: { label: "Set my password", url: "{{ .ConfirmationURL }}" },
       note: "This link can be used once and expires after a short time. If it has expired, ask the Scale to Thrive team to send a new one. If you were not expecting this invitation, you can ignore this email.",

@@ -4,9 +4,9 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Scale to Thrive | Job-oriented workshops for engineers",
+  title: "Scale to Thrive | Job-oriented chariots for engineers",
   description:
-    "Two 12-week hybrid workshops for engineering students and recent graduates: IT Skills and Advanced Excel & Corporate Readiness. By Anvesana TBI and PES Trust.",
+    "Two 12-week hybrid chariots for engineering students and recent graduates: IT Skills and Advanced Excel & Corporate Readiness. By Anvesana TBI and PES Trust.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

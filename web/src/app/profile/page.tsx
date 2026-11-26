@@ -44,7 +44,7 @@ export default async function Profile() {
         </div>
 
         <section className="mt-6 rounded-[28px] bg-white p-8">
-          <h2 className="text-xl font-semibold">Workshop milestones · {track} track</h2>
+          <h2 className="text-xl font-semibold">Chariot milestones · {track} track</h2>
           <p className="text-sm text-muted">{done} of 12 weeks completed</p>
           <div className="mt-4 h-2 rounded-full bg-surface"><div className="h-2 rounded-full bg-accent" style={{ width: `${(done / 12) * 100}%` }} /></div>
           <ol className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -68,7 +68,7 @@ export default async function Profile() {
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <h2 className="text-xl font-semibold">My resume</h2>
-                <p className="mt-1 max-w-xl text-sm text-muted">Built from your workshop application, with the skills of your {track} track. Plain, single-column and ATS friendly.</p>
+                <p className="mt-1 max-w-xl text-sm text-muted">Built from your chariot application, with the skills of your {track} track. Plain, single-column and ATS friendly.</p>
               </div>
               <a href="/documents/resume" className="rounded-full bg-accent px-5 py-2 text-sm font-medium text-white hover:bg-[#0077ed]">Download resume (PDF)</a>
             </div>

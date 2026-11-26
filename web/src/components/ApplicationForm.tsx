@@ -28,7 +28,7 @@ export default function ApplicationForm({ openTracks }: { openTracks: Track[] })
       action={action}
     >
       <fieldset>
-        <legend className="text-lg font-semibold">1. Choose your workshop</legend>
+        <legend className="text-lg font-semibold">1. Choose your chariot</legend>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           {openTracks.map((t) => (
             <label key={t.id} className={`cursor-pointer rounded-2xl border p-4 ${trackId === t.id ? "border-accent bg-white" : "border-black/10 bg-white/60"}`}>

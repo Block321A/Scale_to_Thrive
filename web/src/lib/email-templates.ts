@@ -9,15 +9,15 @@ const build = (subject: string, spec: EmailSpec): Mail => ({ subject, html: rend
 export function applicationReceived(baseUrl: string, name: string, track: string): Mail {
   return build("We received your Scale to Thrive application", {
     baseUrl,
-    preheader: `Thanks for applying to the ${track} workshop. Here is what happens next.`,
+    preheader: `Thanks for applying to the ${track} chariot. Here is what happens next.`,
     eyebrow: "Application received",
     title: `Thank you for applying, ${name.split(" ")[0]}`,
     paragraphs: [
-      `We have received your application for the <strong>${esc(track)} track</strong> of the Scale to Thrive workshop.`,
+      `We have received your application for the <strong>${esc(track)} track</strong> of the Scale to Thrive chariot.`,
       "<strong>What happens next</strong><br>1. Our team reviews every application.<br>2. If you are selected, you will receive an email with a link to set your password and open your student profile.<br>3. If this batch is full, we will let you know and you can apply again for the next one.",
       "Seats are limited, so please keep an eye on your inbox, including the spam folder.",
     ],
-    cta: { label: "About the workshop", url: baseUrl },
+    cta: { label: "About the chariot", url: baseUrl },
     note: "You do not need to do anything else right now.",
   });
 }
@@ -25,7 +25,7 @@ export function applicationReceived(baseUrl: string, name: string, track: string
 export function applicationRejected(baseUrl: string, name: string, track: string): Mail {
   return build("An update on your Scale to Thrive application", {
     baseUrl,
-    preheader: `Your application for the ${track} workshop.`,
+    preheader: `Your application for the ${track} chariot.`,
     eyebrow: "Application update",
     title: `Thank you for applying, ${name.split(" ")[0]}`,
     paragraphs: [
@@ -33,7 +33,7 @@ export function applicationRejected(baseUrl: string, name: string, track: string
       "This is not a reflection of your potential. Seats are limited and many strong applications arrive for every batch. You are very welcome to apply again when the next batch opens.",
       "We wish you every success in your learning and career.",
     ],
-    cta: { label: "See upcoming workshops", url: baseUrl },
+    cta: { label: "See upcoming chariots", url: baseUrl },
   });
 }
 
@@ -55,9 +55,9 @@ export function jobApplied(baseUrl: string, name: string, job: string, company: 
 const STAGES: Record<string, { subject: string; eyebrow: string; title: string; body: string }> = {
   applied: { subject: "Application received", eyebrow: "Status: Applied", title: "Your application is with the company", body: "The company has your application and will review it soon." },
   shortlisted: { subject: "You have been shortlisted", eyebrow: "Status: Shortlisted", title: "You have been shortlisted", body: "Good news. The company liked your profile and moved you to the shortlist. They may contact you soon, so keep your phone and email handy." },
-  interview: { subject: "Interview stage", eyebrow: "Status: Interview", title: "You are moving to the interview stage", body: "The company would like to interview you. Prepare by revisiting your workshop projects and being ready to explain your problem, approach, code and outcome." },
+  interview: { subject: "Interview stage", eyebrow: "Status: Interview", title: "You are moving to the interview stage", body: "The company would like to interview you. Prepare by revisiting your chariot projects and being ready to explain your problem, approach, code and outcome." },
   offered: { subject: "You have received an offer", eyebrow: "Status: Offered", title: "You have received an offer", body: "Congratulations. The company has made you an offer. Please read it carefully and respond to the company directly." },
-  selected: { subject: "Congratulations, you are selected", eyebrow: "Status: Selected", title: "Congratulations, you are selected", body: "The company has selected you for this role. Well done, this is the result of your hard work in the workshop." },
+  selected: { subject: "Congratulations, you are selected", eyebrow: "Status: Selected", title: "Congratulations, you are selected", body: "The company has selected you for this role. Well done, this is the result of your hard work in the chariot." },
   rejected: { subject: "An update on your application", eyebrow: "Status: Not selected", title: "An update on your application", body: "The company has decided not to move forward with your application for this role. Please do not be discouraged. Keep building projects, and apply to other openings on the platform." },
 };
 
@@ -91,11 +91,11 @@ export function enrolleeSelected(baseUrl: string, name: string, track: string): 
   const it = track === "IT";
   return build("Congratulations, you are selected for Scale to Thrive", {
     baseUrl,
-    preheader: `You have a seat in the ${track} workshop. One more step: set your password to sign in.`,
+    preheader: `You have a seat in the ${track} chariot. One more step: set your password to sign in.`,
     eyebrow: "You are in",
     title: `Congratulations ${name.split(" ")[0]}, you are selected`,
     paragraphs: [
-      `Your application was successful. You have a seat in the <strong>${esc(track)} track</strong> of the Scale to Thrive workshop, a practical, job-oriented program for engineering students and graduates.`,
+      `Your application was successful. You have a seat in the <strong>${esc(track)} track</strong> of the Scale to Thrive chariot, a practical, job-oriented program for engineering students and graduates.`,
       `<strong>What to expect</strong><br>&bull; 12 weeks of hybrid learning, ${it ? "96" : "60"} guided hours (${it ? "2 online sessions of 2 hours plus one 4-hour offline lab every week" : "1 hour of communication, 1 hour online and a 3-hour offline lab every week"}).<br>&bull; Hands-on labs and real projects you can show in interviews.<br>&bull; Your student profile, where you follow weekly milestones and apply for jobs posted by partner companies.`,
       passwordSteps,
     ],
@@ -128,7 +128,7 @@ export function adminInvite(baseUrl: string, link: string): Mail {
     title: "You are invited as an admin",
     paragraphs: [
       "You have been added as an administrator of the <strong>Scale to Thrive</strong> platform.",
-      "As an admin you can manage workshop tracks, review and finalize applications, track enrollees, post jobs and add hiring companies. All admins have the same access.",
+      "As an admin you can manage chariot tracks, review and finalize applications, track enrollees, post jobs and add hiring companies. All admins have the same access.",
     ],
     cta: { label: "Set my password", url: link },
     note: linkNote,
@@ -155,15 +155,15 @@ export function passwordReset(baseUrl: string, name: string, link: string): Mail
 export function applicationShortlisted(baseUrl: string, name: string, track: string): Mail {
   return build("You have been shortlisted for Scale to Thrive", {
     baseUrl,
-    preheader: `Good news: your application for the ${track} workshop is shortlisted.`,
+    preheader: `Good news: your application for the ${track} chariot is shortlisted.`,
     eyebrow: "Shortlisted",
     title: `Good news ${name.split(" ")[0]}, you are shortlisted`,
     paragraphs: [
-      `Your application for the <strong>${esc(track)} track</strong> of the Scale to Thrive workshop has been shortlisted.`,
+      `Your application for the <strong>${esc(track)} track</strong> of the Scale to Thrive chariot has been shortlisted.`,
       "<strong>What this means</strong><br>&bull; Your application stood out and has moved to the final round of review.<br>&bull; Shortlisting is not the final selection. Seats are limited, so we will confirm the final list soon.<br>&bull; If you are selected, you will receive a congratulations email and a separate email to set your password and sign in.",
       "Please keep your phone and inbox handy, including the Spam folder, so you do not miss our next update.",
     ],
-    cta: { label: "About the workshop", url: baseUrl },
+    cta: { label: "About the chariot", url: baseUrl },
   });
 }
 
@@ -175,7 +175,7 @@ export function jobShortlisted(baseUrl: string, name: string, job: string, compa
     title: "You have been shortlisted",
     paragraphs: [
       `Hi ${esc(name.split(" ")[0])}, <strong>${esc(company)}</strong> has shortlisted you for the <strong>${esc(job)}</strong> role.`,
-      "<strong>What happens next</strong><br>&bull; The company may contact you by email or phone, so keep both handy.<br>&bull; Prepare by revisiting your workshop projects and being ready to explain your problem, approach, code and outcome.<br>&bull; We will email you again when the company moves you to the next stage.",
+      "<strong>What happens next</strong><br>&bull; The company may contact you by email or phone, so keep both handy.<br>&bull; Prepare by revisiting your chariot projects and being ready to explain your problem, approach, code and outcome.<br>&bull; We will email you again when the company moves you to the next stage.",
     ],
     cta: { label: "View my applications", url: `${baseUrl}/profile` },
   });

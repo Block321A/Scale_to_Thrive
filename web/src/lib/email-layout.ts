@@ -17,7 +17,7 @@ export const BRAND = {
 
 export const ABOUT =
   "Scale to Thrive is a job-oriented training program for engineering students and recent graduates, run by Anvesana TBI and PES Trust. " +
-  "Two 12-week hybrid workshops, IT Skills and Advanced Excel with Corporate Readiness, combine hands-on labs, real projects and career preparation, " +
+  "Two 12-week hybrid chariots, IT Skills and Advanced Excel with Corporate Readiness, combine hands-on labs, real projects and career preparation, " +
   "and connect trained students with hiring companies.";
 
 export type EmailSpec = {

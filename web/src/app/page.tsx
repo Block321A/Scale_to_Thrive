@@ -33,11 +33,11 @@ export default async function Home() {
             Great skills build great careers.
           </h1>
           <p className="mt-6 max-w-2xl text-xl text-white/85">
-            Two 12-week hybrid workshops for engineering students and recent graduates. Learn, practise, build and demonstrate, with real projects and expert trainers.
+            Two 12-week hybrid chariots for engineering students and recent graduates. Learn, practise, build and demonstrate, with real projects and expert trainers.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <a href="#apply" className="rounded-full bg-accent px-7 py-3 text-lg font-medium hover:bg-[#0077ed]">Apply now</a>
-            <a href="#tracks" className="rounded-full bg-white/15 px-7 py-3 text-lg font-medium backdrop-blur hover:bg-white/25">Explore workshops</a>
+            <a href="#tracks" className="rounded-full bg-white/15 px-7 py-3 text-lg font-medium backdrop-blur hover:bg-white/25">Explore chariots</a>
           </div>
         </div>
       </section>
@@ -51,7 +51,7 @@ export default async function Home() {
 
       {/* Tracks */}
       <section id="tracks" className="mx-auto max-w-6xl px-6 py-24">
-        <h2 className="max-w-3xl text-4xl font-semibold tracking-tight md:text-6xl">Two workshops. One goal: get job-ready.</h2>
+        <h2 className="max-w-3xl text-4xl font-semibold tracking-tight md:text-6xl">Two chariots. One goal: get job-ready.</h2>
         <p className="mt-5 max-w-2xl text-xl text-muted">
           Both build technical skill. The Non-IT track adds a weekly communication module for business and corporate roles.
         </p>
@@ -188,7 +188,7 @@ export default async function Home() {
 
       {/* Application (shown only while an admin keeps applications open) */}
       <section id="apply" className="mx-auto max-w-3xl px-6 py-24">
-        <h2 className="text-4xl font-semibold tracking-tight md:text-5xl">Apply for the workshop.</h2>
+        <h2 className="text-4xl font-semibold tracking-tight md:text-5xl">Apply for the chariot.</h2>
         {openTracks.length > 0 ? (
           <div className="mt-10"><ApplicationForm openTracks={openTracks} /></div>
         ) : (

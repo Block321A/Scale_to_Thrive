@@ -13,9 +13,9 @@ export function workshopApplicationSpec(a: A): PdfSpec {
   const ans = (a.answers ?? {}) as Record<string, string | null>;
   const it = a.track_id === "it";
   return {
-    docType: "Workshop application",
+    docType: "Chariot application",
     title: String(a.full_name ?? "Applicant"),
-    subtitle: `${trackName(a.track_id as string)} track workshop. Submitted on ${when(a.created_at as string)}`,
+    subtitle: `${trackName(a.track_id as string)} track chariot. Submitted on ${when(a.created_at as string)}`,
     badge: String(a.status ?? ""),
     sections: [
       { heading: "Applicant", rows: [
@@ -59,7 +59,7 @@ export function jobApplicationSpec(a: A): PdfSpec {
         ["Applied on", when(a.created_at as string)], ["Current status", cap(String(a.stage ?? ""))],
       ] },
       { heading: "Applicant", rows: [
-        ["Full name", p.full_name ?? ""], ["Email", p.email ?? ""], ["Phone", p.phone ?? ""], ["Workshop track", trackName(e.track_id)],
+        ["Full name", p.full_name ?? ""], ["Email", p.email ?? ""], ["Phone", p.phone ?? ""], ["Chariot track", trackName(e.track_id)],
         ["College / institution", e.college ?? ""], ["City / state", e.city_state ?? ""], ["Date of birth", day(e.date_of_birth)], ["Gender", e.gender ?? ""],
         ["Career goal", e.career_goal ?? ""], ["GitHub profile", e.github_url ?? ""],
       ] },
