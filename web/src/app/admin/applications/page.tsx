@@ -8,6 +8,12 @@ const badge: Record<string, string> = {
   finalized: "bg-green-50 text-green-800", rejected: "bg-red-50 text-red-700",
 };
 
+
+// Readable version of the track-specific answers (education is shown on its own line)
+const ANSWER_LABELS: Record<string, string> = { experience: "Experience", github_url: "GitHub", tools: "Tools", english: "English", career_area: "Career area" };
+const answerLines = (ans: Record<string, string | null> | null) =>
+  Object.entries(ANSWER_LABELS).filter(([k]) => ans?.[k]).map(([k, l]) => `${l}: ${ans![k]}`).join(" · ") || "No extra answers";
+
 export default async function Applications({ searchParams }: PageProps<"/admin/applications">) {
   const sp = await searchParams;
   const track = typeof sp.track === "string" ? sp.track : "";
@@ -47,7 +53,7 @@ export default async function Applications({ searchParams }: PageProps<"/admin/a
                     <div className="mt-2 space-y-1 text-muted">
                       <p>College: {a.college}</p><p>Education: {a.answers?.education_level ?? "-"}{a.answers?.branch ? `, ${a.answers.branch}` : ""} ({a.answers?.education_status === "completed" ? "passed out" : "studying"} {a.answers?.passout_year ?? ""})</p><p>City: {a.city_state ?? "-"}</p>
                       <p>Why: {a.reason}</p><p>Goal: {a.career_goal ?? "-"}</p>
-                      <p>Answers: {Object.entries(a.answers ?? {}).filter(([, v]) => v).map(([k, v]) => `${k}: ${v}`).join(", ") || "-"}</p>
+                      <p>{answerLines(a.answers)}</p>
                       <p>Heard from: {a.heard_from ?? "-"}</p>
                       <p>Resume: {a.resume_path ? <a className="text-accent" href={`/admin/applications/resume?path=${encodeURIComponent(a.resume_path)}`}>Download</a> : "none"}</p>
                     </div>
