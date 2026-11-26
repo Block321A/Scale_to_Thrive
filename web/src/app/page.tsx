@@ -52,7 +52,7 @@ export default async function Home() {
       </section>
 
       {/* Mobile quick links (like Fabric's in-page jump bar), sticks under the header */}
-      <nav aria-label="On this page" className="sticky top-[calc(4rem+3vh)] z-40 border-y border-black/5 bg-white md:hidden">
+      <nav aria-label="On this page" className="sticky top-[calc(3vh+67px)] z-40 border-y border-black/5 bg-white md:hidden">
         <ul className="flex gap-2 overflow-x-auto px-4 py-2.5 text-sm font-medium [scrollbar-width:none]">
           {[["#tracks", "Chariots"], ["#curriculum", "Curriculum"], ["#projects", "Projects"], ["#careers", "Careers"], ["#team", "Trainers"], ["#apply", "Apply"]].map(([h, l]) => (
             <li key={h}><a href={h} className="block whitespace-nowrap rounded-full bg-surface px-4 py-2">{l}</a></li>
