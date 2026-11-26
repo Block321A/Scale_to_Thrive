@@ -149,3 +149,7 @@
 - [x] Application form now requires: highest education, branch / specialization, education status (currently studying or completed) and year of passing out (expected year if still studying). Validated again on the server. Stored in the application answers, so no database change is needed.
 - [x] Used by the student resume (education section and summary wording), the application PDF, the Excel exports and the admin application view
 - [ ] Applications and enrollees created before this change have no education details; their resume falls back to "B.E. / B.Tech" and the ATS score shows what is missing
+
+## Speed and region
+- [x] Supabase project is in Sydney (ap-southeast-2). `web/vercel.json` runs Vercel's functions in Sydney (`syd1`) next to it.
+- [ ] Best for users in India: new Supabase project in Mumbai (ap-south-1), then change `regions` in `web/vercel.json` to `bom1`. Supabase cannot move a project to another region in place.
