@@ -122,6 +122,35 @@ export async function setMilestone(f: FormData) {
   redirect(`/admin/enrollees?open=${str(f, "enrollee_id")}`);
 }
 
+const MILESTONE_LABEL: Record<string, string> = { not_started: "Not started", in_progress: "In progress", completed: "Completed" };
+
+// One change for a whole category: every IT student, every Non-IT student, or everyone.
+export async function setTrackMilestone(f: FormData) {
+  const me = await requireRole("admin");
+  const scope = str(f, "scope");
+  const status = str(f, "status");
+  const week = Number(f.get("week"));
+  const earlier = f.get("earlier") === "on";
+  if (!["it", "non-it", "all"].includes(scope) || !(status in MILESTONE_LABEL) || !Number.isInteger(week) || week < 1 || week > 12) {
+    back("/admin/enrollees", "Choose a category, a week and a status", false);
+  }
+  const supabase = await createClient();
+  let q = supabase.from("enrollee_milestones")
+    .update({ status, updated_by: me.id, updated_at: new Date().toISOString() })
+    .select("enrollee_id");
+  q = earlier ? q.lte("week", week) : q.eq("week", week);
+  if (scope !== "all") q = q.eq("track_id", scope);
+  const { data, error } = await q;
+  if (error) back("/admin/enrollees", error.message, false);
+  revalidatePath("/admin/enrollees");
+  revalidatePath("/profile");
+  const students = new Set((data ?? []).map((r) => r.enrollee_id)).size;
+  const who = scope === "all" ? "all categories" : scope === "it" ? "IT" : "Non-IT";
+  back("/admin/enrollees", students
+    ? `${earlier ? `Weeks 1 to ${week}` : `Week ${week}`} set to "${MILESTONE_LABEL[status]}" for ${students} ${who} student${students === 1 ? "" : "s"}`
+    : `No ${who} students to update yet`);
+}
+
 export async function resendLink(f: FormData) {
   await requireRole("admin");
   await sendPasswordLink(str(f, "email"));

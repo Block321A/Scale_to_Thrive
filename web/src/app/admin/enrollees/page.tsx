@@ -1,7 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import Notice from "@/components/Notice";
-import { setMilestone, resendLink } from "../actions";
-import { btn, btnGhost, field, th, td, table, thead, tbody, tr } from "@/lib/ui";
+import { setMilestone, setTrackMilestone, resendLink } from "../actions";
+import ConfirmButton from "@/components/ConfirmButton";
+import { btn, btnGhost, field, card, th, td, table, thead, tbody, tr } from "@/lib/ui";
 
 export default async function Enrollees({ searchParams }: PageProps<"/admin/enrollees">) {
   const sp = await searchParams;
@@ -24,6 +25,37 @@ export default async function Enrollees({ searchParams }: PageProps<"/admin/enro
         </div>
       </div>
       <Notice ok={sp.ok} err={sp.err} />
+
+      {/* One change for a whole category */}
+      <form action={setTrackMilestone} className={card + " mb-6 space-y-3"}>
+        <div>
+          <h2 className="font-semibold">Set a milestone for a whole category</h2>
+          <p className="text-sm text-muted">Update every student in IT, Non-IT or both at once. You can still change one student below.</p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-4">
+          <select name="scope" required defaultValue="" className={field} aria-label="Category">
+            <option value="" disabled>Category</option>
+            <option value="it">All IT students</option>
+            <option value="non-it">All Non-IT students</option>
+            <option value="all">Both categories</option>
+          </select>
+          <select name="week" required defaultValue="" className={field} aria-label="Week">
+            <option value="" disabled>Week</option>
+            {Array.from({ length: 12 }, (_, i) => <option key={i + 1} value={i + 1}>Week {i + 1}</option>)}
+          </select>
+          <select name="status" required defaultValue="" className={field} aria-label="Status">
+            <option value="" disabled>Status</option>
+            <option value="not_started">Not started</option>
+            <option value="in_progress">In progress</option>
+            <option value="completed">Completed</option>
+          </select>
+          <ConfirmButton message="This changes the milestone for every student in the chosen category and replaces what is set now. Continue?" className={btn}>Apply to all</ConfirmButton>
+        </div>
+        <label className="flex items-center gap-2 text-sm text-muted">
+          <input type="checkbox" name="earlier" className="size-4" /> Also set all earlier weeks (1 up to the chosen week) to this status
+        </label>
+      </form>
+
       <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
         <table className={table}>
           <thead className={thead}><tr className="border-b border-black/5"><th className={th}>Enrollee</th><th className={th}>Track</th><th className={th}>Progress</th><th className={th}></th></tr></thead>
