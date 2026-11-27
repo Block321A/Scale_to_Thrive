@@ -29,3 +29,32 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
+
+/* ---- Waiting feedback ---- */
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes progress-run { from { transform: scaleX(0.02); } to { transform: scaleX(0.9); } }
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+/* Top bar: grows while a page loads, finishes when it arrives */
+.nav-progress { position: fixed; inset: 0 0 auto 0; z-index: 100; height: 3px; pointer-events: none; opacity: 0; transition: opacity 0.3s ease; }
+.nav-progress.run, .nav-progress.done { opacity: 1; }
+.nav-progress.idle { opacity: 0; }
+.nav-progress-bar { height: 100%; width: 100%; transform-origin: left; transform: scaleX(0); background: linear-gradient(90deg, #0071e3, #18b7a0); border-radius: 0 3px 3px 0; box-shadow: 0 0 8px rgba(0, 113, 227, 0.5); }
+.nav-progress.run .nav-progress-bar { animation: progress-run 12s cubic-bezier(0.1, 0.6, 0.2, 1) forwards; }
+.nav-progress.done .nav-progress-bar { transform: scaleX(1); transition: transform 0.25s ease-out; }
+.nav-progress.done { opacity: 0; transition: opacity 0.3s ease 0.15s; }
+
+/* Any button whose form is being sent shows a spinner and cannot be pressed twice */
+button[data-busy], button[aria-busy="true"] { pointer-events: none; opacity: 0.8; cursor: progress; }
+button[data-busy]::before, button[aria-busy="true"]::before {
+  content: ""; display: inline-block; width: 0.9em; height: 0.9em; margin-right: 0.5em; vertical-align: -0.12em;
+  border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite;
+}
+
+/* Loading skeletons shimmer */
+.skeleton { background: linear-gradient(90deg, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0.10) 50%, rgba(0,0,0,0.05) 75%); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-progress-bar, button[data-busy]::before, button[aria-busy="true"]::before, .skeleton { animation: none !important; }
+  html { scroll-behavior: auto; }
+}

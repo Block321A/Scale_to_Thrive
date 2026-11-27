@@ -154,3 +154,9 @@
 - [x] Supabase project is in Mumbai (ap-south-1). `web/vercel.json` runs Vercel's functions in Mumbai (`bom1`) next to it.
 - [x] Moved from the old Sydney project: schema re-run, admin user recreated, Site URL, redirect URL, sign-ups off, SMTP and Vercel keys updated.
 - [ ] Delete the old Sydney Supabase project and the old Google app password after testing.
+
+## Sign-in speed and waiting feedback (done)
+- [x] Role is stored with each account (secure app_metadata) by a database trigger, so sign-in needs no extra lookup. **Run `supabase/add-role-claim.sql` once in the Supabase SQL Editor** (also fills in existing accounts). Until it is run, sign-in falls back to the old lookup.
+- [x] Profile cover photo is a light WebP (117 KB instead of 307 KB) and is preloaded while the sign-in page is open.
+- [x] `/api/warm` endpoint plus a quiet background request wake the server before sign-in. Vercel's free plan only allows daily cron jobs, so for a steady keep-warm add a free uptime monitor (for example UptimeRobot, every 5 minutes) on `https://scaletothrive-web.vercel.app/api/warm`.
+- [x] Top progress bar and button spinners while pages and forms load. Nothing is shown for waits under 150 ms.

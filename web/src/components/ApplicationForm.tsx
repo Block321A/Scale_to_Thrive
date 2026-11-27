@@ -26,6 +26,7 @@ export default function ApplicationForm({ openTracks }: { openTracks: Track[] })
     <form
       className="space-y-8 rounded-3xl bg-surface p-8 md:p-10"
       action={action}
+      data-own-progress=""
     >
       <fieldset>
         <legend className="text-lg font-semibold">1. Choose your chariot</legend>
@@ -120,7 +121,7 @@ export default function ApplicationForm({ openTracks }: { openTracks: Track[] })
       </fieldset>
 
       {state.message && <p className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{state.message}</p>}
-      <button disabled={pending} className="rounded-full bg-accent px-8 py-3 text-base font-medium text-white hover:bg-[#0077ed] disabled:opacity-60">{pending ? "Submitting..." : "Submit application"}</button>
+      <button disabled={pending} aria-busy={pending} className="rounded-full bg-accent px-8 py-3 text-base font-medium text-white hover:bg-[#0077ed] disabled:opacity-60">{pending ? "Submitting..." : "Submit application"}</button>
     </form>
   );
 }

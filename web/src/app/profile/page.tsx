@@ -35,7 +35,7 @@ export default async function Profile() {
   return (
     <div className="bg-surface pb-24">
       <div className="relative h-56 md:h-72">
-        <Image src="/images/office.jpg" alt="" fill priority sizes="100vw" className="object-cover" />
+        <Image src="/images/office-cover.webp" alt="" fill priority unoptimized sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
       </div>
       <div className="mx-auto max-w-4xl px-0 md:px-6">

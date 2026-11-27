@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getProfile, homeFor, type Role } from "@/lib/auth";
 import SubmitButton from "@/components/SubmitButton";
+import WarmUp from "@/components/WarmUp";
+import { preload } from "react-dom";
 import { supabaseConfigured } from "@/lib/supabase/env";
 import { sendPasswordLink } from "@/lib/invite";
 
@@ -13,9 +15,14 @@ async function signIn(formData: FormData) {
     password: String(formData.get("password")),
   });
   if (error || !data.user) redirect("/login?error=credentials");
-  // Use the id from sign-in directly (no second token check)
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", data.user.id).single();
-  redirect(profile ? homeFor(profile.role as Role) : "/");
+  // The role travels with the account (secure app_metadata), so no extra database lookup is needed.
+  let role = data.user.app_metadata?.role as Role | undefined;
+  if (!role) {
+    // Older accounts without the stored role: look it up once
+    const { data: profile } = await supabase.from("profiles").select("role").eq("id", data.user.id).single();
+    role = profile?.role as Role | undefined;
+  }
+  redirect(role ? homeFor(role) : "/");
 }
 
 async function forgot(formData: FormData) {
@@ -28,6 +35,7 @@ const field = "w-full rounded-xl border border-black/15 bg-white px-4 py-3 text-
 
 export default async function Login({ searchParams }: PageProps<"/login">) {
   const sp = await searchParams;
+  preload("/images/office-cover.webp", { as: "image", fetchPriority: "low" }); // the next page's cover photo
   if (supabaseConfigured) {
     const p = await getProfile();
     if (p) redirect(homeFor(p.role));

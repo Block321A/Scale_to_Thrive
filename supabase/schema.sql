@@ -475,3 +475,23 @@ insert into public.track_milestones (track_id, week, title, details) values
 
 -- The server (service role) calls this to build an enrollee after the invite is sent.
 grant execute on function public.create_enrollee(uuid, uuid) to service_role;
+
+-- Role stored with the account (secure app_metadata), so sign-in needs no extra lookup. Same as supabase/add-role-claim.sql
+create or replace function public.sync_role_claim()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  update auth.users
+     set raw_app_meta_data = coalesce(raw_app_meta_data, '{}'::jsonb) || jsonb_build_object('role', new.role::text)
+   where id = new.id;
+  return new;
+end;
+$$;
+
+drop trigger if exists profiles_sync_role_claim on public.profiles;
+create trigger profiles_sync_role_claim
+  after insert or update of role on public.profiles
+  for each row execute function public.sync_role_claim();
